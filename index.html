@@ -582,7 +582,15 @@ function updateKeyStatus() {
         if (warn)  warn.style.display  = 'block';
     }
 }
-
+function saveApiKey() {
+    var key = document.getElementById('geminiApiKey').value.trim();
+    if (!key) {
+        showToast('Please enter an API key', 'error');
+        return;
+    }
+    localStorage.setItem('geminiApiKey', key);
+    showToast('✅ API key saved successfully!', 'success');
+}
 // ══════════════════════════════════════════════
 //  GEMINI API — auto-tries multiple models
 // ══════════════════════════════════════════════
