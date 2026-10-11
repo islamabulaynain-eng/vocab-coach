@@ -95,17 +95,15 @@
         .ant-chip { background: #FEE2E2; color: #991B1B; padding: 0.2rem 0.6rem; border-radius: 99px; font-size: 0.82rem; }
         .colloc-chip { background: #EDE9FE; color: #5B21B6; padding: 0.2rem 0.6rem; border-radius: 99px; font-size: 0.82rem; }
 
-        .editable-section { margin-top: 1.25rem; }
         .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
         @media(max-width:550px){ .field-row { grid-template-columns: 1fr; } }
 
         .loading-wrap { text-align: center; padding: 2rem; }
         .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .error-box { background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
+        .error-box { background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; line-height: 1.6; }
 
-        /* API Status Banner */
-        .api-status { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+        .api-status { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; min-height: 1.8rem; }
         .api-badge { padding: 0.25rem 0.65rem; border-radius: 99px; font-size: 0.78rem; font-weight: 600; }
         .api-ok { background: #D1FAE5; color: #065F46; }
         .api-fail { background: #FEE2E2; color: #991B1B; }
@@ -183,7 +181,6 @@
         .flex-end { display: flex; justify-content: flex-end; gap: 0.5rem; }
         .mt-1 { margin-top: 0.5rem; }
         .mt-2 { margin-top: 1rem; }
-        .text-center { text-align: center; }
         .text-muted { color: var(--muted); font-size: 0.88rem; }
         #session-complete { display: none; text-align: center; padding: 2rem; }
         #session-complete .big-emoji { font-size: 4rem; margin-bottom: 1rem; }
@@ -194,8 +191,6 @@
         .step.done { background: var(--success); color: white; }
         .step-line { flex: 1; height: 2px; background: var(--border); }
         .step-line.done { background: var(--success); }
-
-        .info-box { background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; padding: 0.85rem 1rem; border-radius: 8px; font-size: 0.88rem; margin-bottom: 1rem; }
     </style>
 </head>
 <body>
@@ -214,7 +209,7 @@
 
 <div class="container">
 
-<!-- ══════════════════════════════════════════════ DASHBOARD ══ -->
+<!-- ══════════ DASHBOARD ══════════ -->
 <div id="dashboard" class="section active">
     <div class="card">
         <h2>📊 Your Progress Overview</h2>
@@ -225,7 +220,7 @@
             <div class="stat-box"><h3 id="stat-streak">0</h3><p>Day Streak 🔥</p></div>
         </div>
         <div style="text-align:center; margin-top:1rem;">
-            <button class="btn btn-primary" onclick="startPractice()" style="font-size:1.05rem; padding:0.85rem 2rem;">🎯 Start Practice Session</button>
+            <button class="btn btn-primary" onclick="startPractice()" style="font-size:1.05rem;padding:0.85rem 2rem;">🎯 Start Practice Session</button>
         </div>
     </div>
     <div class="card">
@@ -238,20 +233,11 @@
     </div>
 </div>
 
-<!-- ══════════════════════════════════════════════ ADD WORD ══ -->
+<!-- ══════════ ADD WORD ══════════ -->
 <div id="add" class="section">
 <div class="card">
     <h2>➕ Smart Word Lookup</h2>
-
-    <!-- API Status -->
     <div class="api-status" id="api-status"></div>
-
-    <!-- Info box -->
-    <div class="info-box" id="cors-info" style="display:none;">
-        ⚠️ <strong>Running from a local file?</strong> Some APIs may be blocked by your browser.
-        <strong>Host this file online</strong> (Netlify, GitHub Pages) for full functionality.
-        <a href="https://app.netlify.com/drop" target="_blank" style="color:var(--primary);">→ Netlify Drop (free, 2 min)</a>
-    </div>
 
     <div class="step-indicator">
         <div class="step active" id="step1">1</div>
@@ -271,62 +257,56 @@
         <div class="spinner"></div>
         <p class="text-muted" id="loading-msg">Fetching definition…</p>
     </div>
-
     <div id="lookup-error" style="display:none;" class="error-box"></div>
 
-    <!-- ── RESULTS PANEL ── -->
     <div id="lookup-panel">
-
         <div class="lookup-header">
             <span class="lookup-word" id="lk-word"></span>
-            <span class="lookup-ipa" id="lk-ipa"></span>
-            <span class="lookup-pos" id="lk-pos"></span>
-            <button class="audio-btn" id="lk-audio-btn" onclick="playAudio()" title="Listen" style="display:none;">🔊</button>
+            <span class="lookup-ipa"  id="lk-ipa"></span>
+            <span class="lookup-pos"  id="lk-pos"></span>
+            <button class="audio-btn" id="lk-audio-btn" onclick="playAudio()" style="display:none;">🔊</button>
         </div>
-
         <div style="margin-bottom:1rem;">
             <span class="text-muted" style="font-size:0.85rem;">Syllables: </span>
-            <strong id="lk-chunks" style="color:var(--primary); letter-spacing:2px;"></strong>
+            <strong id="lk-chunks" style="color:var(--primary);letter-spacing:2px;"></strong>
         </div>
 
-        <div class="def-tabs" id="def-tabs"></div>
+        <div class="def-tabs"   id="def-tabs"></div>
         <div id="def-panels"></div>
 
-        <!-- Arabic -->
         <div class="arabic-panel" id="arabic-panel" style="display:none;">
             <h4>🌙 Arabic Translation</h4>
             <div class="arabic-word" id="ar-word"></div>
-            <div style="font-size:0.85rem; color:var(--muted); margin-bottom:0.5rem;">Click a meaning to use it:</div>
+            <div style="font-size:0.85rem;color:var(--muted);margin-bottom:0.5rem;">Click a meaning to use it:</div>
             <div class="arabic-meanings" id="ar-meanings"></div>
         </div>
 
-        <!-- Synonyms / Antonyms -->
         <div class="form-row" style="margin-bottom:1rem;">
             <div>
-                <div class="text-muted" style="font-size:0.85rem; margin-bottom:0.4rem;">✅ Synonyms</div>
+                <div class="text-muted" style="font-size:0.85rem;margin-bottom:0.4rem;">✅ Synonyms</div>
                 <div class="word-chips" id="lk-synonyms"></div>
             </div>
             <div>
-                <div class="text-muted" style="font-size:0.85rem; margin-bottom:0.4rem;">❌ Antonyms</div>
+                <div class="text-muted" style="font-size:0.85rem;margin-bottom:0.4rem;">❌ Antonyms</div>
                 <div class="word-chips" id="lk-antonyms"></div>
             </div>
         </div>
 
         <div style="margin-bottom:1rem;">
-            <div class="text-muted" style="font-size:0.85rem; margin-bottom:0.4rem;">🔗 Collocations from examples</div>
+            <div class="text-muted" style="font-size:0.85rem;margin-bottom:0.4rem;">🔗 Collocations</div>
             <div class="word-chips" id="lk-collocations"></div>
         </div>
 
         <div class="divider"></div>
-        <h3 style="margin-bottom:1rem; color:var(--primary);">✏️ Review & Customize Before Saving</h3>
+        <h3 style="margin-bottom:1rem;color:var(--primary);">✏️ Review & Customize Before Saving</h3>
 
         <div class="form-group">
             <label>Selected Definition (English) *</label>
             <textarea id="final-meaning" rows="3"></textarea>
         </div>
         <div class="form-group">
-            <label>Arabic Meaning *</label>
-            <textarea id="final-arabic" rows="2" style="direction:rtl; text-align:right; font-size:1.1rem;"></textarea>
+            <label>Arabic Meaning</label>
+            <textarea id="final-arabic" rows="2" style="direction:rtl;text-align:right;font-size:1.1rem;"></textarea>
         </div>
         <div class="field-row">
             <div class="form-group"><label>IPA Pronunciation</label><input type="text" id="final-ipa"></div>
@@ -347,10 +327,10 @@
         <div class="form-group">
             <label>Primary Retrieval Weakness</label>
             <div class="weakness-tags" id="add-weakness-tags">
-                <span class="tag tag-meaning" onclick="toggleAddTag(this,'meaning')">🧠 Meaning</span>
-                <span class="tag tag-sound" onclick="toggleAddTag(this,'sound')">🔊 Sound</span>
-                <span class="tag tag-spelling" onclick="toggleAddTag(this,'spelling')">✏️ Spelling</span>
-                <span class="tag tag-speed" onclick="toggleAddTag(this,'speed')">⚡ Speed</span>
+                <span class="tag tag-meaning"     onclick="toggleAddTag(this,'meaning')">🧠 Meaning</span>
+                <span class="tag tag-sound"       onclick="toggleAddTag(this,'sound')">🔊 Sound</span>
+                <span class="tag tag-spelling"    onclick="toggleAddTag(this,'spelling')">✏️ Spelling</span>
+                <span class="tag tag-speed"       onclick="toggleAddTag(this,'speed')">⚡ Speed</span>
                 <span class="tag tag-collocation" onclick="toggleAddTag(this,'collocation')">🔗 Collocation</span>
             </div>
         </div>
@@ -358,14 +338,14 @@
             <button class="btn btn-outline" onclick="resetLookup()">🔄 New Search</button>
             <button class="btn btn-success" onclick="saveWord()">💾 Save to Library</button>
         </div>
-    </div><!-- /lookup-panel -->
+    </div>
 </div>
 </div>
 
-<!-- ══════════════════════════════════════════════ PRACTICE ══ -->
+<!-- ══════════ PRACTICE ══════════ -->
 <div id="practice" class="section">
-    <div id="session-complete" class="card">
-        <div class="big-emoji">🎉</div>
+    <div id="session-complete" class="card" style="text-align:center;padding:2rem;display:none;">
+        <div class="big-emoji" style="font-size:4rem;margin-bottom:1rem;">🎉</div>
         <h2>Session Complete!</h2>
         <p class="text-muted" style="margin-bottom:1.5rem;">Great work! Here's your session summary:</p>
         <div class="stats-grid" id="session-summary-stats"></div>
@@ -392,11 +372,10 @@
             </div>
 
             <div id="practice-content" style="display:none;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
                     <span class="text-muted" id="practice-pos-tag"></span>
                     <span class="text-muted" id="practice-weakness-tag"></span>
                 </div>
-
                 <div class="meaning-display" id="practice-meaning"></div>
                 <div class="arabic-meaning-display" id="practice-arabic" style="display:none;"></div>
                 <div class="context-sentence" id="practice-sentence" style="display:none;"></div>
@@ -405,9 +384,7 @@
                     <input type="text" id="recall-input" placeholder="Type the word here…" onkeydown="if(event.key==='Enter') checkRecall()">
                     <div class="check-result" id="check-result"></div>
                 </div>
-
                 <div class="hint-display" id="hint-display"></div>
-
                 <div class="hints-area">
                     <button class="btn btn-outline btn-sm" onclick="showSentence()">📖 Sentence</button>
                     <button class="btn btn-outline btn-sm" onclick="toggleArabicHint()">🌙 Arabic</button>
@@ -419,33 +396,33 @@
 
                 <div class="answer-area" id="answer-area">
                     <div class="word-reveal" id="answer-word"></div>
-                    <div style="font-size:1rem; color:var(--muted); margin-bottom:0.25rem;" id="answer-ipa"></div>
-                    <div style="font-size:1.2rem; color:#92400E; direction:rtl; margin-bottom:0.75rem; font-weight:600;" id="answer-arabic"></div>
-                    <div style="font-size:0.9rem; margin-bottom:1rem;" id="answer-colloc"></div>
+                    <div style="font-size:1rem;color:var(--muted);margin-bottom:0.25rem;" id="answer-ipa"></div>
+                    <div style="font-size:1.2rem;color:#92400E;direction:rtl;margin-bottom:0.75rem;font-weight:600;" id="answer-arabic"></div>
+                    <div style="font-size:0.9rem;margin-bottom:1rem;" id="answer-colloc"></div>
                     <div class="context-sentence" id="answer-sentence" style="display:none;"></div>
                     <div class="text-muted" id="answer-mnemonic" style="margin-top:0.5rem;"></div>
 
                     <div id="youglish-container">
-                        <h3 style="color:var(--primary); margin-bottom:0.75rem;">🎬 Hear it in Real Sentences</h3>
+                        <h3 style="color:var(--primary);margin-bottom:0.75rem;">🎬 Hear it in Real Sentences</h3>
                         <div id="youglish_widget"></div>
                         <button class="btn btn-outline btn-sm mt-1" onclick="loadYouGlish()">🔄 Reload</button>
                     </div>
 
                     <div class="divider"></div>
-                    <p style="font-weight:600; margin-bottom:0.75rem;">How did you recall this word?</p>
+                    <p style="font-weight:600;margin-bottom:0.75rem;">How did you recall this word?</p>
                     <div class="rating-buttons">
-                        <button class="btn btn-danger" onclick="rateWord(0)">😵 Forgot</button>
+                        <button class="btn btn-danger"  onclick="rateWord(0)">😵 Forgot</button>
                         <button class="btn btn-warning" onclick="rateWord(1)">😓 Hard</button>
-                        <button class="btn btn-info" onclick="rateWord(2)">🙂 Good</button>
+                        <button class="btn btn-info"    onclick="rateWord(2)">🙂 Good</button>
                         <button class="btn btn-success" onclick="rateWord(3)">😄 Easy</button>
                     </div>
                     <div style="margin-top:1.25rem;">
-                        <p class="text-muted" style="font-size:0.85rem; margin-bottom:0.5rem;">What was hard? (optional)</p>
+                        <p class="text-muted" style="font-size:0.85rem;margin-bottom:0.5rem;">What was hard? (optional)</p>
                         <div class="weakness-tags" id="review-weakness-tags">
-                            <span class="tag tag-meaning" onclick="toggleReviewTag(this,'meaning')">🧠 Meaning</span>
-                            <span class="tag tag-sound" onclick="toggleReviewTag(this,'sound')">🔊 Sound</span>
-                            <span class="tag tag-spelling" onclick="toggleReviewTag(this,'spelling')">✏️ Spelling</span>
-                            <span class="tag tag-speed" onclick="toggleReviewTag(this,'speed')">⚡ Speed</span>
+                            <span class="tag tag-meaning"     onclick="toggleReviewTag(this,'meaning')">🧠 Meaning</span>
+                            <span class="tag tag-sound"       onclick="toggleReviewTag(this,'sound')">🔊 Sound</span>
+                            <span class="tag tag-spelling"    onclick="toggleReviewTag(this,'spelling')">✏️ Spelling</span>
+                            <span class="tag tag-speed"       onclick="toggleReviewTag(this,'speed')">⚡ Speed</span>
                             <span class="tag tag-collocation" onclick="toggleReviewTag(this,'collocation')">🔗 Collocation</span>
                         </div>
                     </div>
@@ -459,15 +436,17 @@
     </div>
 </div>
 
-<!-- ══════════════════════════════════════════════ LIBRARY ══ -->
+<!-- ══════════ LIBRARY ══════════ -->
 <div id="library" class="section">
     <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; margin-bottom:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-bottom:1rem;">
             <h2 style="margin:0;">📚 Word Library</h2>
-            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
                 <button class="btn btn-outline btn-sm" onclick="exportJSON()">💾 Backup</button>
                 <button class="btn btn-outline btn-sm" onclick="exportCSV()">📊 CSV</button>
-                <label class="btn btn-outline btn-sm" style="cursor:pointer;">📂 Restore <input type="file" accept=".json" onchange="importJSON(event)" style="display:none;"></label>
+                <label class="btn btn-outline btn-sm" style="cursor:pointer;">📂 Restore
+                    <input type="file" accept=".json" onchange="importJSON(event)" style="display:none;">
+                </label>
             </div>
         </div>
         <div class="search-bar">
@@ -509,7 +488,7 @@
             <div class="form-group"><label>Part of Speech</label><input type="text" id="edit-pos"></div>
         </div>
         <div class="form-group"><label>Meaning (English)</label><textarea id="edit-meaning"></textarea></div>
-        <div class="form-group"><label>Arabic Meaning</label><textarea id="edit-arabic" style="direction:rtl; text-align:right;"></textarea></div>
+        <div class="form-group"><label>Arabic Meaning</label><textarea id="edit-arabic" style="direction:rtl;text-align:right;"></textarea></div>
         <div class="form-group"><label>Example Sentence</label><textarea id="edit-sentence" style="min-height:60px;"></textarea></div>
         <div class="form-group"><label>Collocations</label><input type="text" id="edit-collocations"></div>
         <div class="form-group"><label>Mnemonic</label><input type="text" id="edit-mnemonic"></div>
@@ -533,79 +512,62 @@ let currentAudioUrl = null;
 const INTERVALS = [1, 3, 7, 14, 21, 30, 60, 90];
 
 function save() {
-    localStorage.setItem('vocabCoach_vocab', JSON.stringify(vocab));
+    localStorage.setItem('vocabCoach_vocab',   JSON.stringify(vocab));
     localStorage.setItem('vocabCoach_history', JSON.stringify(reviewHistory));
-    localStorage.setItem('vocabCoach_streak', streak);
+    localStorage.setItem('vocabCoach_streak',  streak);
 }
 function load() {
-    vocab    = JSON.parse(localStorage.getItem('vocabCoach_vocab')   || '[]');
+    vocab         = JSON.parse(localStorage.getItem('vocabCoach_vocab')   || '[]');
     reviewHistory = JSON.parse(localStorage.getItem('vocabCoach_history') || '[]');
-    streak   = parseInt(localStorage.getItem('vocabCoach_streak')    || '0');
+    streak        = parseInt(localStorage.getItem('vocabCoach_streak')    || '0');
 }
 
 // ══════════════════════════════════════════════
-//  API LAYER  — with CORS proxy fallback chain
+//  ROBUST FETCH  — no AbortSignal.timeout()
 // ══════════════════════════════════════════════
+function fetchWithTimeout(url, ms) {
+    // Manual timeout using Promise.race — works in ALL browsers
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), ms);
+    return fetch(url, { signal: controller.signal })
+        .then(r => { clearTimeout(timer); return r; })
+        .catch(e => { clearTimeout(timer); throw e; });
+}
 
-// Detect local file
-const IS_LOCAL = location.protocol === 'file:';
-
-// CORS proxies to try in order
-const PROXIES = [
-    url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-    url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-    url => `https://cors-anywhere.herokuapp.com/${url}`,
-];
-
-async function fetchWithFallback(url, label='') {
-    // Try direct first (works when hosted online)
-    try {
-        const r = await fetch(url, { signal: AbortSignal.timeout(6000) });
-        if (r.ok) return r.json();
-    } catch(e) { /* try proxies */ }
-
-    // Try each proxy
-    for (const proxy of PROXIES) {
+// Try URL directly, then through two CORS proxies
+async function fetchJSON(url) {
+    const proxies = [
+        u => u,                                                              // direct
+        u => `https://corsproxy.io/?${encodeURIComponent(u)}`,              // proxy 1
+        u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`, // proxy 2
+    ];
+    let lastErr;
+    for (const wrap of proxies) {
         try {
-            const r = await fetch(proxy(url), { signal: AbortSignal.timeout(8000) });
-            if (r.ok) return r.json();
-        } catch(e) { continue; }
+            const res = await fetchWithTimeout(wrap(url), 9000);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return await res.json();
+        } catch(e) { lastErr = e; }
     }
-    throw new Error(`Could not reach ${label || url}. Check your internet connection.`);
+    throw lastErr;
 }
 
-// ── Dictionary API ──
+// ── Dictionary ──
 async function fetchDictionary(word) {
-    const url = `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`;
-    const data = await fetchWithFallback(url, 'Dictionary API');
-    if (!Array.isArray(data) || !data.length) throw new Error(`"${word}" not found. Check spelling.`);
+    const url  = `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`;
+    const data = await fetchJSON(url);
+    if (!Array.isArray(data) || !data.length) throw new Error(`"${word}" not found.`);
     return data;
 }
 
-// ── Translation: MyMemory (primary) + LibreTranslate (fallback) ──
+// ── Translation (MyMemory, no key needed) ──
 async function fetchTranslation(word) {
-    // 1. MyMemory
     try {
-        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|ar`;
-        const data = await fetchWithFallback(url, 'MyMemory');
-        if (data?.responseData?.translatedText) return { source:'MyMemory', data };
-    } catch(e) {}
-
-    // 2. LibreTranslate public instance
-    try {
-        const r = await fetch('https://libretranslate.com/translate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ q: word, source: 'en', target: 'ar', format: 'text' }),
-            signal: AbortSignal.timeout(8000)
-        });
-        if (r.ok) {
-            const d = await r.json();
-            if (d.translatedText) return { source:'LibreTranslate', data: { responseData:{ translatedText: d.translatedText }, matches:[] } };
-        }
-    } catch(e) {}
-
-    return null; // Translation unavailable — user can type manually
+        const url  = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|ar`;
+        const data = await fetchJSON(url);
+        if (data?.responseData?.translatedText) return data;
+    } catch(e) { /* silent */ }
+    return null;
 }
 
 // ══════════════════════════════════════════════
@@ -615,260 +577,270 @@ async function lookupWord() {
     const word = document.getElementById('inp-word').value.trim();
     if (!word) { toast('⚠️ Please enter a word first!'); return; }
 
-    // Show CORS warning if local
-    document.getElementById('cors-info').style.display = IS_LOCAL ? 'block' : 'none';
-
     document.getElementById('lookup-loading').style.display = 'block';
-    document.getElementById('lookup-panel').style.display = 'none';
-    document.getElementById('lookup-error').style.display = 'none';
+    document.getElementById('lookup-panel').style.display   = 'none';
+    document.getElementById('lookup-error').style.display   = 'none';
     setStep(1);
-    setApiStatus([
-        { label:'📖 Dictionary', state:'loading' },
-        { label:'🌙 Arabic', state:'loading' }
+    setBadges([
+        { id:0, label:'📖 Dictionary', state:'loading' },
+        { id:1, label:'🌙 Arabic',     state:'loading' }
     ]);
 
-    let dictData = null, translationData = null, errors = [];
+    let dictData = null, transData = null;
 
-    // Dictionary (required)
+    // ── Dictionary (required) ──
     try {
         document.getElementById('loading-msg').textContent = 'Fetching definition…';
         dictData = await fetchDictionary(word);
-        updateApiStatus(0, 'ok');
+        setBadgeState(0, 'ok');
     } catch(e) {
-        updateApiStatus(0, 'fail');
-        errors.push(e.message);
-    }
-
-    // Translation (optional)
-    try {
-        document.getElementById('loading-msg').textContent = 'Translating to Arabic…';
-        translationData = await fetchTranslation(word);
-        updateApiStatus(1, translationData ? 'ok' : 'fail');
-    } catch(e) {
-        updateApiStatus(1, 'fail');
-    }
-
-    document.getElementById('lookup-loading').style.display = 'none';
-
-    if (!dictData) {
-        document.getElementById('lookup-error').style.display = 'block';
+        setBadgeState(0, 'fail');
+        document.getElementById('lookup-loading').style.display = 'none';
+        document.getElementById('lookup-error').style.display   = 'block';
         document.getElementById('lookup-error').innerHTML =
-            `❌ ${errors.join('<br>')}${IS_LOCAL ? '<br><br>💡 <strong>Tip:</strong> Host this file on <a href="https://app.netlify.com/drop" target="_blank">Netlify Drop</a> to fix CORS issues.' : ''}`;
+            `❌ <strong>Dictionary lookup failed.</strong><br>${e.message}<br><br>
+             💡 Tips:<br>
+             • Check your internet connection<br>
+             • Make sure the word is spelled correctly<br>
+             • Try again in a few seconds`;
         return;
     }
 
-    renderLookupResults(word, dictData, translationData);
+    // ── Translation (optional) ──
+    try {
+        document.getElementById('loading-msg').textContent = 'Translating to Arabic…';
+        transData = await fetchTranslation(word);
+        setBadgeState(1, transData ? 'ok' : 'fail');
+    } catch(e) {
+        setBadgeState(1, 'fail');
+    }
+
+    document.getElementById('lookup-loading').style.display = 'none';
+    renderResults(word, dictData, transData);
     setStep(2);
 }
 
 // ══════════════════════════════════════════════
-//  RENDER RESULTS
+//  RENDER
 // ══════════════════════════════════════════════
-function renderLookupResults(word, dictEntries, translationResult) {
-    const entry = dictEntries[0];
-
+function renderResults(word, entries, transData) {
+    const entry = entries[0];
     document.getElementById('lk-word').textContent = entry.word || word;
 
-    // IPA + Audio
-    let ipa = '', audioUrl = '';
+    // IPA + audio
+    let ipa = '', audio = '';
     for (const ph of (entry.phonetics || [])) {
-        if (ph.text && !ipa) ipa = ph.text;
-        if (ph.audio && !audioUrl) audioUrl = ph.audio;
+        if (ph.text  && !ipa)   ipa   = ph.text;
+        if (ph.audio && !audio) audio = ph.audio;
     }
     document.getElementById('lk-ipa').textContent = ipa;
-    currentAudioUrl = audioUrl || null;
-    document.getElementById('lk-audio-btn').style.display = audioUrl ? 'inline-flex' : 'none';
-    document.getElementById('final-ipa').value = ipa;
+    currentAudioUrl = audio || null;
+    document.getElementById('lk-audio-btn').style.display = audio ? 'inline-flex' : 'none';
+    document.getElementById('final-ipa').value    = ipa;
+    document.getElementById('final-chunks').value = syllabify(word);
+    document.getElementById('lk-chunks').textContent = syllabify(word);
 
-    // Syllables
-    const chunks = syllabify(word);
-    document.getElementById('lk-chunks').textContent = chunks;
-    document.getElementById('final-chunks').value = chunks;
-
-    // Definitions by POS
-    const meanings = entry.meanings || [];
-    const tabsEl = document.getElementById('def-tabs');
-    const panelsEl = document.getElementById('def-panels');
+    // Definitions
+    const meanings  = entry.meanings || [];
+    const tabsEl    = document.getElementById('def-tabs');
+    const panelsEl  = document.getElementById('def-panels');
     tabsEl.innerHTML = ''; panelsEl.innerHTML = '';
 
-    let firstDef = '', firstExample = '', firstPos = '';
+    let firstDef = '', firstEx = '', firstPos = '';
     let allSyn = new Set(), allAnt = new Set();
 
     meanings.forEach((m, i) => {
         const tab = document.createElement('button');
-        tab.className = 'def-tab' + (i===0?' active':'');
+        tab.className = 'def-tab' + (i === 0 ? ' active' : '');
         tab.textContent = m.partOfSpeech;
-        tab.onclick = () => switchDefTab(i);
+        tab.onclick = () => switchTab(i);
         tabsEl.appendChild(tab);
 
         const panel = document.createElement('div');
-        panel.className = 'def-panel' + (i===0?' active':'');
-        panel.id = `def-panel-${i}`;
-
-        const defs = (m.definitions||[]).slice(0,5);
-        panel.innerHTML = defs.map((d,di) => `
-            <div class="definition-item" onclick="selectDefinition(this,'${esc(d.definition)}','${esc(d.example||'')}','${esc(m.partOfSpeech)}')">
+        panel.className = 'def-panel' + (i === 0 ? ' active' : '');
+        const defs = (m.definitions || []).slice(0, 5);
+        panel.innerHTML = defs.map((d, di) => `
+            <div class="definition-item"
+                 onclick="pickDef(this,'${esc(d.definition)}','${esc(d.example||'')}','${esc(m.partOfSpeech)}')">
                 <span class="select-indicator" style="display:none;">✅</span>
                 <div class="def-text"><strong>${di+1}.</strong> ${d.definition}</div>
-                ${d.example?`<div class="def-example">"${d.example}"</div>`:''}
+                ${d.example ? `<div class="def-example">"${d.example}"</div>` : ''}
             </div>`).join('');
         panelsEl.appendChild(panel);
 
-        if (i===0 && defs.length) { firstDef=defs[0].definition; firstExample=defs[0].example||''; firstPos=m.partOfSpeech; }
-        (m.synonyms||[]).forEach(s=>allSyn.add(s));
-        (m.antonyms||[]).forEach(a=>allAnt.add(a));
-        defs.forEach(d=>{ (d.synonyms||[]).forEach(s=>allSyn.add(s)); (d.antonyms||[]).forEach(a=>allAnt.add(a)); });
+        if (i === 0 && defs.length) {
+            firstDef = defs[0].definition;
+            firstEx  = defs[0].example || '';
+            firstPos = m.partOfSpeech;
+        }
+        (m.synonyms||[]).forEach(s => allSyn.add(s));
+        (m.antonyms||[]).forEach(a => allAnt.add(a));
+        defs.forEach(d => {
+            (d.synonyms||[]).forEach(s => allSyn.add(s));
+            (d.antonyms||[]).forEach(a => allAnt.add(a));
+        });
     });
 
     document.getElementById('final-meaning').value = firstDef;
-    document.getElementById('lk-pos').textContent = firstPos;
-    if (firstExample) document.getElementById('final-sentence').value = firstExample.replace(new RegExp(`\\b${word}\\b`,'gi'),'___');
+    document.getElementById('lk-pos').textContent  = firstPos;
+    if (firstEx) {
+        document.getElementById('final-sentence').value =
+            firstEx.replace(new RegExp(`\\b${word}\\b`, 'gi'), '___');
+    }
 
     // Synonyms / Antonyms
-    const syns = [...allSyn].slice(0,8);
+    const syns = [...allSyn].slice(0, 8);
     document.getElementById('lk-synonyms').innerHTML = syns.length
-        ? syns.map(s=>`<span class="syn-chip" onclick="document.getElementById('inp-word').value='${s}';lookupWord()">${s}</span>`).join('')
+        ? syns.map(s => `<span class="syn-chip"
+              onclick="document.getElementById('inp-word').value='${s}';lookupWord()">${s}</span>`).join('')
         : '<span class="text-muted">—</span>';
 
-    const ants = [...allAnt].slice(0,6);
+    const ants = [...allAnt].slice(0, 6);
     document.getElementById('lk-antonyms').innerHTML = ants.length
-        ? ants.map(a=>`<span class="ant-chip">${a}</span>`).join('')
+        ? ants.map(a => `<span class="ant-chip">${a}</span>`).join('')
         : '<span class="text-muted">—</span>';
 
     // Collocations
-    const collocations = extractCollocations(word, dictEntries);
-    document.getElementById('lk-collocations').innerHTML = collocations.length
-        ? collocations.map(c=>`<span class="colloc-chip" style="cursor:pointer;" onclick="addCollocation('${esc(c)}')">${c}</span>`).join('')
+    const collocs = extractCollocs(word, entries);
+    document.getElementById('lk-collocations').innerHTML = collocs.length
+        ? collocs.map(c => `<span class="colloc-chip" style="cursor:pointer;"
+              onclick="addColloc('${esc(c)}')">${c}</span>`).join('')
         : '<span class="text-muted">—</span>';
-    document.getElementById('final-collocations').value = collocations.slice(0,4).join(', ');
+    document.getElementById('final-collocations').value = collocs.slice(0, 4).join(', ');
 
     // Arabic
-    renderArabic(translationResult);
+    renderArabic(transData);
 
     document.getElementById('lookup-panel').style.display = 'block';
 }
 
-function switchDefTab(idx) {
-    document.querySelectorAll('.def-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
-    document.querySelectorAll('.def-panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
+function switchTab(i) {
+    document.querySelectorAll('.def-tab').forEach((t,j)   => t.classList.toggle('active', i===j));
+    document.querySelectorAll('.def-panel').forEach((p,j)  => p.classList.toggle('active', i===j));
 }
 
-function selectDefinition(el, def, example, pos) {
-    document.querySelectorAll('.definition-item').forEach(d=>{
+function pickDef(el, def, ex, pos) {
+    document.querySelectorAll('.definition-item').forEach(d => {
         d.classList.remove('selected');
-        d.querySelector('.select-indicator').style.display='none';
+        d.querySelector('.select-indicator').style.display = 'none';
     });
     el.classList.add('selected');
-    el.querySelector('.select-indicator').style.display='inline';
+    el.querySelector('.select-indicator').style.display = 'inline';
     document.getElementById('final-meaning').value = def;
-    document.getElementById('lk-pos').textContent = pos;
+    document.getElementById('lk-pos').textContent  = pos;
     const word = document.getElementById('inp-word').value.trim();
-    if (example) document.getElementById('final-sentence').value = example.replace(new RegExp(`\\b${word}\\b`,'gi'),'___');
+    if (ex) document.getElementById('final-sentence').value =
+        ex.replace(new RegExp(`\\b${word}\\b`, 'gi'), '___');
     toast('✅ Definition selected!');
 }
 
-function renderArabic(result) {
+function renderArabic(data) {
     const panel = document.getElementById('arabic-panel');
-    if (!result?.data?.responseData?.translatedText) {
+    if (!data?.responseData?.translatedText) {
         panel.style.display = 'none';
         document.getElementById('final-arabic').placeholder = 'Translation unavailable — type manually';
         return;
     }
-    const main = result.data.responseData.translatedText;
-    document.getElementById('ar-word').textContent = main;
-    document.getElementById('final-arabic').value = main;
+    const main = data.responseData.translatedText;
+    document.getElementById('ar-word').textContent    = main;
+    document.getElementById('final-arabic').value     = main;
 
-    const matches = (result.data.matches||[])
-        .map(m=>m.translation).filter((v,i,a)=>v&&v!==main&&a.indexOf(v)===i).slice(0,6);
+    const extras = (data.matches || [])
+        .map(m => m.translation)
+        .filter((v, i, a) => v && v !== main && a.indexOf(v) === i)
+        .slice(0, 6);
 
-    const chips = [main, ...matches].slice(0,8);
-    document.getElementById('ar-meanings').innerHTML = chips.map(t=>
-        `<span class="arabic-chip" onclick="document.getElementById('final-arabic').value='${esc(t)}';toast('✅ Arabic selected!')">${t}</span>`
-    ).join('');
+    document.getElementById('ar-meanings').innerHTML =
+        [main, ...extras].slice(0, 8).map(t =>
+            `<span class="arabic-chip"
+                onclick="document.getElementById('final-arabic').value='${esc(t)}';
+                         toast('✅ Arabic selected!')">${t}</span>`
+        ).join('');
     panel.style.display = 'block';
 }
 
-function extractCollocations(word, entries) {
+function extractCollocs(word, entries) {
     const found = new Set();
-    entries.forEach(e=>(e.meanings||[]).forEach(m=>(m.definitions||[]).forEach(d=>{
+    entries.forEach(e => (e.meanings||[]).forEach(m => (m.definitions||[]).forEach(d => {
         if (!d.example) return;
         const ex = d.example.toLowerCase();
         const wi = ex.indexOf(word.toLowerCase());
         if (wi > 0) {
-            const pre = ex.slice(Math.max(0,wi-20),wi).trim().split(/\s+/).slice(-2).join(' ');
-            if (pre.length>1) found.add(`${pre} ${word}`);
+            const pre = ex.slice(Math.max(0, wi-20), wi).trim().split(/\s+/).slice(-2).join(' ');
+            if (pre.length > 1) found.add(`${pre} ${word}`);
         }
         if (wi >= 0) {
-            const post = ex.slice(wi+word.length).trim().split(/\s+/).slice(0,2).join(' ');
-            if (post.length>1) found.add(`${word} ${post}`);
+            const post = ex.slice(wi + word.length).trim().split(/\s+/).slice(0, 2).join(' ');
+            if (post.length > 1) found.add(`${word} ${post}`);
         }
     })));
-    return [...found].filter(c=>c.length>word.length+2).slice(0,8);
+    return [...found].filter(c => c.length > word.length + 2).slice(0, 8);
 }
 
-function addCollocation(c) {
+function addColloc(c) {
     const el = document.getElementById('final-collocations');
-    el.value = el.value.trim() ? el.value.trim()+', '+c : c;
+    el.value = el.value.trim() ? el.value.trim() + ', ' + c : c;
     toast('🔗 Collocation added!');
 }
 
 function syllabify(word) {
-    // Improved heuristic syllabification
     const vowels = /[aeiouy]/i;
-    let result = word[0], count = 0;
-    for (let i=1; i<word.length-1; i++) {
-        result += word[i];
-        if (vowels.test(word[i]) && !vowels.test(word[i+1]) && vowels.test(word[i-1]||'')) {
-            result += '·'; count++;
-        } else if (!vowels.test(word[i]) && vowels.test(word[i+1]) && vowels.test(word[i-1]||'')) {
-            result = result.slice(0,-1)+'·'+word[i]; count++;
-        }
+    let out = word[0] || '';
+    for (let i = 1; i < word.length - 1; i++) {
+        out += word[i];
+        if (vowels.test(word[i]) && !vowels.test(word[i+1]||'') && i < word.length - 2)
+            out += '·';
     }
-    result += word[word.length-1]||'';
-    return result.replace(/·+/g,'·').replace(/^·|·$/g,'') || word;
+    out += word.length > 1 ? word[word.length-1] : '';
+    return out.replace(/·+/g,'·').replace(/^·|·$/g,'') || word;
 }
 
 function playAudio() {
     if (!currentAudioUrl) return;
-    const url = currentAudioUrl.startsWith('//') ? 'https:'+currentAudioUrl : currentAudioUrl;
-    new Audio(url).play().catch(()=>toast('⚠️ Could not play audio.'));
+    const url = currentAudioUrl.startsWith('//') ? 'https:' + currentAudioUrl : currentAudioUrl;
+    new Audio(url).play().catch(() => toast('⚠️ Could not play audio.'));
 }
 
-// ── API Status badges ──
-function setApiStatus(items) {
-    document.getElementById('api-status').innerHTML = items.map((item,i)=>
-        `<span class="api-badge api-loading" id="api-badge-${i}">${item.label} ⏳</span>`
+// ── Badge helpers ──
+function setBadges(items) {
+    document.getElementById('api-status').innerHTML = items.map((it, i) =>
+        `<span class="api-badge api-loading" id="api-badge-${i}">${it.label} ⏳</span>`
     ).join('');
 }
-function updateApiStatus(idx, state) {
-    const el = document.getElementById(`api-badge-${idx}`);
+function setBadgeState(i, state) {
+    const el = document.getElementById(`api-badge-${i}`);
     if (!el) return;
+    const icons = { ok:'✅', fail:'❌', loading:'⏳' };
     el.className = `api-badge api-${state}`;
-    el.textContent = el.textContent.replace(/[⏳✅❌]/,'') + (state==='ok'?'✅':state==='fail'?'❌':'⏳');
+    el.textContent = el.textContent.replace(/[✅❌⏳]/g,'') + icons[state];
 }
 
+// ── Step indicator ──
 function setStep(n) {
-    for (let i=1;i<=3;i++) {
-        const s=document.getElementById(`step${i}`);
-        if(i<n){s.className='step done';s.textContent='✓';}
-        else if(i===n){s.className='step active';s.textContent=i;}
-        else{s.className='step';s.textContent=i;}
-        if(i<3) document.getElementById(`line${i}`).className='step-line'+(i<n?' done':'');
+    for (let i = 1; i <= 3; i++) {
+        const s = document.getElementById(`step${i}`);
+        if (i < n)       { s.className = 'step done';   s.textContent = '✓'; }
+        else if (i === n){ s.className = 'step active';  s.textContent = i;   }
+        else             { s.className = 'step';         s.textContent = i;   }
+        if (i < 3) document.getElementById(`line${i}`).className =
+            'step-line' + (i < n ? ' done' : '');
     }
 }
 
 function resetLookup() {
-    document.getElementById('inp-word').value='';
-    document.getElementById('lookup-panel').style.display='none';
-    document.getElementById('lookup-error').style.display='none';
-    document.getElementById('api-status').innerHTML='';
-    addWeaknesses=[];
-    document.querySelectorAll('#add-weakness-tags .tag').forEach(t=>t.classList.remove('selected'));
+    document.getElementById('inp-word').value = '';
+    document.getElementById('lookup-panel').style.display = 'none';
+    document.getElementById('lookup-error').style.display = 'none';
+    document.getElementById('api-status').innerHTML = '';
+    addWeaknesses = [];
+    document.querySelectorAll('#add-weakness-tags .tag').forEach(t => t.classList.remove('selected'));
     setStep(1);
     document.getElementById('inp-word').focus();
 }
 
-function esc(str){ return String(str).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+function esc(s) {
+    return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+}
 
 // ══════════════════════════════════════════════
 //  SAVE WORD
@@ -876,13 +848,13 @@ function esc(str){ return String(str).replace(/\\/g,'\\\\').replace(/'/g,"\\'").
 function saveWord() {
     const word    = document.getElementById('inp-word').value.trim();
     const meaning = document.getElementById('final-meaning').value.trim();
-    const arabic  = document.getElementById('final-arabic').value.trim();
-    if (!word||!meaning){ toast('⚠️ Word and meaning are required!'); return; }
-    if (vocab.find(w=>w.word.toLowerCase()===word.toLowerCase()))
+    if (!word || !meaning) { toast('⚠️ Word and meaning are required!'); return; }
+    if (vocab.find(w => w.word.toLowerCase() === word.toLowerCase()))
         if (!confirm(`"${word}" already exists. Add anyway?`)) return;
 
     vocab.push({
-        id: Date.now().toString(), word, meaning, arabic,
+        id: Date.now().toString(), word, meaning,
+        arabic:       document.getElementById('final-arabic').value.trim(),
         ipa:          document.getElementById('final-ipa').value.trim(),
         chunks:       document.getElementById('final-chunks').value.trim(),
         pos:          document.getElementById('lk-pos').textContent,
@@ -890,8 +862,8 @@ function saveWord() {
         collocations: document.getElementById('final-collocations').value.trim(),
         mnemonic:     document.getElementById('final-mnemonic').value.trim(),
         weaknesses:   [...addWeaknesses],
-        level:0, nextReview:null,
-        addedDate: new Date().toISOString(), reviewCount:0,
+        level: 0, nextReview: null,
+        addedDate: new Date().toISOString(), reviewCount: 0,
     });
     save();
     toast(`✅ "${word}" saved!`);
@@ -901,22 +873,32 @@ function saveWord() {
 }
 
 // ══════════════════════════════════════════════
-//  WEAKNESS TAGS
+//  TAGS
 // ══════════════════════════════════════════════
-function toggleAddTag(el,v){ el.classList.toggle('selected'); addWeaknesses.includes(v)?addWeaknesses=addWeaknesses.filter(x=>x!==v):addWeaknesses.push(v); }
-function toggleReviewTag(el,v){ el.classList.toggle('selected'); selectedReviewWeaknesses.includes(v)?selectedReviewWeaknesses=selectedReviewWeaknesses.filter(x=>x!==v):selectedReviewWeaknesses.push(v); }
+function toggleAddTag(el, v) {
+    el.classList.toggle('selected');
+    addWeaknesses.includes(v)
+        ? (addWeaknesses = addWeaknesses.filter(x => x !== v))
+        : addWeaknesses.push(v);
+}
+function toggleReviewTag(el, v) {
+    el.classList.toggle('selected');
+    selectedReviewWeaknesses.includes(v)
+        ? (selectedReviewWeaknesses = selectedReviewWeaknesses.filter(x => x !== v))
+        : selectedReviewWeaknesses.push(v);
+}
 
 // ══════════════════════════════════════════════
 //  NAVIGATION
 // ══════════════════════════════════════════════
 function showTab(tab) {
-    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-    document.querySelectorAll('.nav-links button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
     document.getElementById(tab).classList.add('active');
-    const idx=['dashboard','add','practice','library'].indexOf(tab);
+    const idx = ['dashboard','add','practice','library'].indexOf(tab);
     document.querySelectorAll('.nav-links button')[idx].classList.add('active');
-    if(tab==='dashboard') updateDashboard();
-    if(tab==='library') renderLibrary();
+    if (tab === 'dashboard') updateDashboard();
+    if (tab === 'library')   renderLibrary();
 }
 
 // ══════════════════════════════════════════════
@@ -924,21 +906,24 @@ function showTab(tab) {
 // ══════════════════════════════════════════════
 function updateDashboard() {
     document.getElementById('stat-total').textContent    = vocab.length;
-    document.getElementById('stat-due').textContent      = vocab.filter(w=>isDue(w)).length;
-    document.getElementById('stat-mastered').textContent = vocab.filter(w=>(w.level||0)>=4).length;
+    document.getElementById('stat-due').textContent      = vocab.filter(isDue).length;
+    document.getElementById('stat-mastered').textContent = vocab.filter(w => (w.level||0) >= 4).length;
     document.getElementById('stat-streak').textContent   = streak;
     renderWeaknessProfile();
     renderRecentActivity();
 }
 
 function renderWeaknessProfile() {
-    const el=document.getElementById('weakness-profile');
-    if(!reviewHistory.length){el.innerHTML='<p class="text-muted">Complete some reviews to see your weakness profile.</p>';return;}
-    const counts={meaning:0,sound:0,spelling:0,speed:0,collocation:0};
-    reviewHistory.forEach(r=>(r.weaknesses||[]).forEach(w=>{if(counts[w]!==undefined)counts[w]++;}));
-    const total=Object.values(counts).reduce((a,b)=>a+b,0)||1;
-    const labels={meaning:'🧠 Meaning',sound:'🔊 Sound',spelling:'✏️ Spelling',speed:'⚡ Speed',collocation:'🔗 Collocation'};
-    el.innerHTML=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
+    const el = document.getElementById('weakness-profile');
+    if (!reviewHistory.length) {
+        el.innerHTML = '<p class="text-muted">Complete some reviews to see your weakness profile.</p>';
+        return;
+    }
+    const counts = { meaning:0, sound:0, spelling:0, speed:0, collocation:0 };
+    reviewHistory.forEach(r => (r.weaknesses||[]).forEach(w => { if (w in counts) counts[w]++; }));
+    const total = Object.values(counts).reduce((a,b) => a+b, 0) || 1;
+    const labels = { meaning:'🧠 Meaning', sound:'🔊 Sound', spelling:'✏️ Spelling', speed:'⚡ Speed', collocation:'🔗 Collocation' };
+    el.innerHTML = Object.entries(counts).sort((a,b) => b[1]-a[1]).map(([k,v]) => `
         <div class="weakness-bar-wrap">
             <div class="weakness-label"><span>${labels[k]}</span><span>${v}</span></div>
             <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/total*100)}%"></div></div>
@@ -946,153 +931,222 @@ function renderWeaknessProfile() {
 }
 
 function renderRecentActivity() {
-    const el=document.getElementById('recent-activity');
-    const recent=reviewHistory.slice(-10).reverse();
-    if(!recent.length){el.innerHTML='<p class="text-muted">No activity yet.</p>';return;}
-    const rl=['😵 Forgot','😓 Hard','🙂 Good','😄 Easy'];
-    el.innerHTML=`<table><thead><tr><th>Word</th><th>Arabic</th><th>Rating</th><th>Date</th></tr></thead><tbody>
-        ${recent.map(r=>`<tr><td><strong>${r.word}</strong></td><td style="direction:rtl">${r.arabic||''}</td><td>${rl[r.rating]}</td><td>${new Date(r.date).toLocaleDateString()}</td></tr>`).join('')}
-    </tbody></table>`;
+    const el = document.getElementById('recent-activity');
+    const recent = reviewHistory.slice(-10).reverse();
+    if (!recent.length) { el.innerHTML = '<p class="text-muted">No activity yet.</p>'; return; }
+    const rl = ['😵 Forgot','😓 Hard','🙂 Good','😄 Easy'];
+    el.innerHTML = `<table>
+        <thead><tr><th>Word</th><th>Arabic</th><th>Rating</th><th>Date</th></tr></thead>
+        <tbody>${recent.map(r => `
+            <tr>
+                <td><strong>${r.word}</strong></td>
+                <td style="direction:rtl">${r.arabic||''}</td>
+                <td>${rl[r.rating]}</td>
+                <td>${new Date(r.date).toLocaleDateString()}</td>
+            </tr>`).join('')}
+        </tbody></table>`;
 }
 
 // ══════════════════════════════════════════════
 //  SRS
 // ══════════════════════════════════════════════
-function isDue(w){ return !w.nextReview||new Date(w.nextReview)<=new Date(); }
-function getNewLevel(l,r){ if(r===0)return 0;if(r===1)return Math.max(0,l-1);if(r===2)return Math.min(l+1,INTERVALS.length-1);return Math.min(l+2,INTERVALS.length-1); }
-function getNextInterval(l,r){ if(r===0)return 1;if(r===1)return Math.max(1,INTERVALS[Math.max(0,l-1)]);if(r===2)return INTERVALS[Math.min(l,INTERVALS.length-1)];return INTERVALS[Math.min(l+1,INTERVALS.length-1)]; }
+function isDue(w) { return !w.nextReview || new Date(w.nextReview) <= new Date(); }
+function getNewLevel(l, r) {
+    if (r===0) return 0;
+    if (r===1) return Math.max(0, l-1);
+    if (r===2) return Math.min(l+1, INTERVALS.length-1);
+    return Math.min(l+2, INTERVALS.length-1);
+}
+function getNextInterval(l, r) {
+    if (r===0) return 1;
+    if (r===1) return Math.max(1, INTERVALS[Math.max(0, l-1)]);
+    if (r===2) return INTERVALS[Math.min(l, INTERVALS.length-1)];
+    return INTERVALS[Math.min(l+1, INTERVALS.length-1)];
+}
 
 // ══════════════════════════════════════════════
 //  PRACTICE
 // ══════════════════════════════════════════════
 function startPractice() {
     showTab('practice');
-    const due=vocab.filter(w=>isDue(w));
-    if(!vocab.length){
-        document.getElementById('no-practice').style.display='block';
-        document.getElementById('practice-content').style.display='none';
-        document.getElementById('session-complete').style.display='none';
+    const due = vocab.filter(isDue);
+    if (!vocab.length) {
+        document.getElementById('no-practice').style.display    = 'block';
+        document.getElementById('practice-content').style.display = 'none';
+        document.getElementById('session-complete').style.display = 'none';
         return;
     }
-    sessionQueue=shuffle(due.length?[...due]:[...vocab]).slice(0,20);
-    sessionIdx=0; sessionStats={done:0,correct:0,forgot:0};
-    document.getElementById('session-complete').style.display='none';
-    document.getElementById('practice-card-wrap').style.display='block';
-    document.getElementById('no-practice').style.display='none';
-    document.getElementById('practice-content').style.display='block';
-    document.getElementById('session-progress').style.display='flex';
-    loadPracticeCard();
+    sessionQueue = shuffle(due.length ? [...due] : [...vocab]).slice(0, 20);
+    sessionIdx   = 0;
+    sessionStats = { done:0, correct:0, forgot:0 };
+    document.getElementById('session-complete').style.display    = 'none';
+    document.getElementById('practice-card-wrap').style.display  = 'block';
+    document.getElementById('no-practice').style.display         = 'none';
+    document.getElementById('practice-content').style.display    = 'block';
+    document.getElementById('session-progress').style.display    = 'flex';
+    loadCard();
 }
 
-function loadPracticeCard() {
-    if(sessionIdx>=sessionQueue.length){showSessionComplete();return;}
-    currentWord=sessionQueue[sessionIdx];
-    hintsUsed=[]; selectedReviewWeaknesses=[];
-    document.getElementById('recall-input').value='';
-    document.getElementById('check-result').textContent='';
-    document.getElementById('hint-display').textContent='';
-    document.getElementById('answer-area').style.display='none';
-    document.getElementById('show-answer-wrap').style.display='block';
-    document.getElementById('practice-sentence').style.display='none';
-    document.getElementById('practice-arabic').style.display='none';
-    document.getElementById('youglish-container').style.display='none';
-    document.querySelectorAll('#review-weakness-tags .tag').forEach(t=>t.classList.remove('selected'));
-    document.getElementById('practice-meaning').innerHTML=`<strong>📖 Definition:</strong> ${currentWord.meaning}`;
-    document.getElementById('practice-pos-tag').textContent=currentWord.pos?`[${currentWord.pos}]`:'';
-    document.getElementById('practice-weakness-tag').textContent=currentWord.weaknesses?.length?`⚠️ ${currentWord.weaknesses.join(', ')}`:'';
-    updateSessionProgress();
+function loadCard() {
+    if (sessionIdx >= sessionQueue.length) { showComplete(); return; }
+    currentWord = sessionQueue[sessionIdx];
+    hintsUsed = []; selectedReviewWeaknesses = [];
+
+    ['recall-input'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('check-result').textContent = '';
+    document.getElementById('hint-display').textContent = '';
+    document.getElementById('answer-area').style.display      = 'none';
+    document.getElementById('show-answer-wrap').style.display = 'block';
+    document.getElementById('practice-sentence').style.display = 'none';
+    document.getElementById('practice-arabic').style.display   = 'none';
+    document.getElementById('youglish-container').style.display = 'none';
+    document.querySelectorAll('#review-weakness-tags .tag').forEach(t => t.classList.remove('selected'));
+
+    document.getElementById('practice-meaning').innerHTML =
+        `<strong>📖 Definition:</strong> ${currentWord.meaning}`;
+    document.getElementById('practice-pos-tag').textContent =
+        currentWord.pos ? `[${currentWord.pos}]` : '';
+    document.getElementById('practice-weakness-tag').textContent =
+        currentWord.weaknesses?.length ? `⚠️ ${currentWord.weaknesses.join(', ')}` : '';
+
+    updateProgress();
     document.getElementById('recall-input').focus();
 }
 
-function updateSessionProgress() {
-    document.getElementById('sp-done').textContent=sessionStats.done;
-    document.getElementById('sp-remaining').textContent=sessionQueue.length-sessionIdx;
-    document.getElementById('sp-correct').textContent=sessionStats.correct;
-    document.getElementById('sp-forgot').textContent=sessionStats.forgot;
+function updateProgress() {
+    document.getElementById('sp-done').textContent      = sessionStats.done;
+    document.getElementById('sp-remaining').textContent = sessionQueue.length - sessionIdx;
+    document.getElementById('sp-correct').textContent   = sessionStats.correct;
+    document.getElementById('sp-forgot').textContent    = sessionStats.forgot;
 }
 
 function showSentence() {
-    if(!currentWord.sentence){toast('No sentence for this word.');return;}
-    const el=document.getElementById('practice-sentence');
-    el.innerHTML=`📖 ${currentWord.sentence.replace(/___/g,'<strong style="color:var(--primary)">___</strong>')}`;
-    el.style.display='block'; hintsUsed.push('sentence');
+    if (!currentWord.sentence) { toast('No sentence for this word.'); return; }
+    const el = document.getElementById('practice-sentence');
+    el.innerHTML = `📖 ${currentWord.sentence.replace(/___/g,
+        '<strong style="color:var(--primary)">___</strong>')}`;
+    el.style.display = 'block';
+    hintsUsed.push('sentence');
 }
 
 function toggleArabicHint() {
-    const el=document.getElementById('practice-arabic');
-    if(!currentWord.arabic){toast('No Arabic translation for this word.');return;}
-    if(el.style.display==='none'){el.textContent=`🌙 ${currentWord.arabic}`;el.style.display='block';hintsUsed.push('arabic');}
-    else el.style.display='none';
+    const el = document.getElementById('practice-arabic');
+    if (!currentWord.arabic) { toast('No Arabic translation for this word.'); return; }
+    if (el.style.display === 'none') {
+        el.textContent = `🌙 ${currentWord.arabic}`;
+        el.style.display = 'block';
+        hintsUsed.push('arabic');
+    } else { el.style.display = 'none'; }
 }
 
 function showHint(type) {
-    const word=currentWord.word, chunks=currentWord.chunks||word;
-    let hint='';
-    if(type==='letter'){hint=word[0].toUpperCase()+' _ _ _';hintsUsed.push('letter');}
-    if(type==='syllable'){hint=chunks.split('·')[0]+' ...';hintsUsed.push('syllable');}
-    if(type==='chunks'){hint=chunks;hintsUsed.push('chunks');}
-    document.getElementById('hint-display').textContent=hint;
+    const word   = currentWord.word;
+    const chunks = currentWord.chunks || word;
+    let hint = '';
+    if (type==='letter')   { hint = word[0].toUpperCase()+' _ _ _'; hintsUsed.push('letter'); }
+    if (type==='syllable') { hint = chunks.split('·')[0]+' ...';    hintsUsed.push('syllable'); }
+    if (type==='chunks')   { hint = chunks;                          hintsUsed.push('chunks'); }
+    document.getElementById('hint-display').textContent = hint;
 }
 
 function checkRecall() {
-    const input=document.getElementById('recall-input').value.trim().toLowerCase();
-    const target=currentWord.word.toLowerCase();
-    const el=document.getElementById('check-result');
-    if(!input){toast('Type a word first!');return;}
-    if(input===target){el.textContent='✅ Correct! Now reveal the full answer.';el.className='check-result correct';}
-    else{el.textContent='❌ Not quite — try again or reveal the answer.';el.className='check-result wrong';}
+    const input  = document.getElementById('recall-input').value.trim().toLowerCase();
+    const target = currentWord.word.toLowerCase();
+    const el     = document.getElementById('check-result');
+    if (!input) { toast('Type a word first!'); return; }
+    if (input === target) {
+        el.textContent = '✅ Correct! Now reveal the full answer.';
+        el.className   = 'check-result correct';
+    } else {
+        el.textContent = '❌ Not quite — try again or reveal the answer.';
+        el.className   = 'check-result wrong';
+    }
 }
 
 function revealAnswer() {
-    document.getElementById('answer-area').style.display='block';
-    document.getElementById('show-answer-wrap').style.display='none';
-    document.getElementById('answer-word').textContent=currentWord.word;
-    document.getElementById('answer-ipa').textContent=currentWord.ipa||'';
-    document.getElementById('answer-arabic').textContent=currentWord.arabic?`🌙 ${currentWord.arabic}`:'';
-    document.getElementById('answer-colloc').innerHTML=currentWord.collocations
-        ?'🔗 '+currentWord.collocations.split(',').map(c=>`<span class="colloc-chip">${c.trim()}</span>`).join(' '):'';
-    if(currentWord.sentence){
-        const s=document.getElementById('answer-sentence');
-        s.innerHTML=currentWord.sentence.replace(/___/g,`<strong style="color:var(--primary)">${currentWord.word}</strong>`);
-        s.style.display='block';
+    document.getElementById('answer-area').style.display      = 'block';
+    document.getElementById('show-answer-wrap').style.display = 'none';
+    document.getElementById('answer-word').textContent   = currentWord.word;
+    document.getElementById('answer-ipa').textContent    = currentWord.ipa || '';
+    document.getElementById('answer-arabic').textContent = currentWord.arabic ? `🌙 ${currentWord.arabic}` : '';
+    document.getElementById('answer-colloc').innerHTML   = currentWord.collocations
+        ? '🔗 ' + currentWord.collocations.split(',')
+            .map(c => `<span class="colloc-chip">${c.trim()}</span>`).join(' ')
+        : '';
+    if (currentWord.sentence) {
+        const s = document.getElementById('answer-sentence');
+        s.innerHTML = currentWord.sentence.replace(/___/g,
+            `<strong style="color:var(--primary)">${currentWord.word}</strong>`);
+        s.style.display = 'block';
     }
-    document.getElementById('answer-mnemonic').textContent=currentWord.mnemonic?`💡 ${currentWord.mnemonic}`:'';
-    document.getElementById('youglish-container').style.display='block';
+    document.getElementById('answer-mnemonic').textContent =
+        currentWord.mnemonic ? `💡 ${currentWord.mnemonic}` : '';
+    document.getElementById('youglish-container').style.display = 'block';
     loadYouGlish();
 }
 
 function loadYouGlish() {
-    if(typeof YG!=='undefined'){
-        if(youglishWidget) youglishWidget.fetch(currentWord.word,'english');
-        else{
-            youglishWidget=new YG.Widget('youglish_widget',{width:'100%',components:8,
-                events:{onFetchDone:e=>{if(e.totalResult===0)document.getElementById('youglish-container').style.display='none';}}});
-            youglishWidget.fetch(currentWord.word,'english');
+    if (typeof YG !== 'undefined') {
+        if (youglishWidget) {
+            youglishWidget.fetch(currentWord.word, 'english');
+        } else {
+            youglishWidget = new YG.Widget('youglish_widget', {
+                width: '100%', components: 8,
+                events: { onFetchDone: e => {
+                    if (e.totalResult === 0)
+                        document.getElementById('youglish-container').style.display = 'none';
+                }}
+            });
+            youglishWidget.fetch(currentWord.word, 'english');
         }
     } else {
-        document.getElementById('youglish_widget').innerHTML=
-            `<iframe src="https://youglish.com/pronounce/${encodeURIComponent(currentWord.word)}/english" width="100%" height="380" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="border-radius:8px;"></iframe>`;
+        document.getElementById('youglish_widget').innerHTML =
+            `<iframe src="https://youglish.com/pronounce/${encodeURIComponent(currentWord.word)}/english"
+                     width="100%" height="380" frameborder="0"
+                     allow="autoplay; encrypted-media" allowfullscreen
+                     style="border-radius:8px;"></iframe>`;
     }
 }
 
 function rateWord(rating) {
-    const newLevel=getNewLevel(currentWord.level||0,rating);
-    const interval=getNextInterval(currentWord.level||0,rating);
-    const nextDate=new Date(); nextDate.setDate(nextDate.getDate()+interval);
-    const idx=vocab.findIndex(w=>w.id===currentWord.id);
-    if(idx!==-1){vocab[idx].level=newLevel;vocab[idx].nextReview=nextDate.toISOString();vocab[idx].reviewCount=(vocab[idx].reviewCount||0)+1;vocab[idx].lastReview=new Date().toISOString();}
-    reviewHistory.push({word:currentWord.word,arabic:currentWord.arabic||'',wordId:currentWord.id,rating,hintsUsed:[...hintsUsed],weaknesses:[...selectedReviewWeaknesses],date:new Date().toISOString(),newLevel,nextReview:nextDate.toISOString()});
-    sessionStats.done++; if(rating>=2)sessionStats.correct++;else sessionStats.forgot++;
-    save(); sessionIdx++; loadPracticeCard();
+    const newLevel = getNewLevel(currentWord.level||0, rating);
+    const interval = getNextInterval(currentWord.level||0, rating);
+    const next     = new Date();
+    next.setDate(next.getDate() + interval);
+
+    const idx = vocab.findIndex(w => w.id === currentWord.id);
+    if (idx !== -1) {
+        vocab[idx].level       = newLevel;
+        vocab[idx].nextReview  = next.toISOString();
+        vocab[idx].reviewCount = (vocab[idx].reviewCount||0) + 1;
+        vocab[idx].lastReview  = new Date().toISOString();
+    }
+    reviewHistory.push({
+        word: currentWord.word, arabic: currentWord.arabic||'',
+        wordId: currentWord.id, rating,
+        hintsUsed: [...hintsUsed], weaknesses: [...selectedReviewWeaknesses],
+        date: new Date().toISOString(), newLevel, nextReview: next.toISOString()
+    });
+    sessionStats.done++;
+    rating >= 2 ? sessionStats.correct++ : sessionStats.forgot++;
+    save();
+    sessionIdx++;
+    loadCard();
 }
 
-function showSessionComplete() {
-    document.getElementById('practice-content').style.display='none';
-    document.getElementById('session-complete').style.display='block';
-    document.getElementById('session-progress').style.display='none';
-    const today=new Date().toDateString(), last=localStorage.getItem('vocabCoach_lastPractice');
-    if(last!==today){const y=new Date();y.setDate(y.getDate()-1);streak=last===y.toDateString()?streak+1:1;localStorage.setItem('vocabCoach_lastPractice',today);save();}
-    document.getElementById('session-summary-stats').innerHTML=`
+function showComplete() {
+    document.getElementById('practice-content').style.display = 'none';
+    document.getElementById('session-complete').style.display = 'block';
+    document.getElementById('session-progress').style.display = 'none';
+    const today = new Date().toDateString();
+    const last  = localStorage.getItem('vocabCoach_lastPractice');
+    if (last !== today) {
+        const y = new Date(); y.setDate(y.getDate()-1);
+        streak = last === y.toDateString() ? streak+1 : 1;
+        localStorage.setItem('vocabCoach_lastPractice', today);
+        save();
+    }
+    document.getElementById('session-summary-stats').innerHTML = `
         <div class="stat-box"><h3>${sessionStats.done}</h3><p>Reviewed</p></div>
         <div class="stat-box"><h3>${sessionStats.correct}</h3><p>Good/Easy</p></div>
         <div class="stat-box"><h3>${sessionStats.forgot}</h3><p>Forgot/Hard</p></div>
@@ -1102,85 +1156,131 @@ function showSessionComplete() {
 // ══════════════════════════════════════════════
 //  LIBRARY
 // ══════════════════════════════════════════════
-function setFilter(f,btn){currentFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderLibrary();}
+function setFilter(f, btn) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderLibrary();
+}
 
 function renderLibrary() {
-    const search=document.getElementById('search-input').value.toLowerCase();
-    const words=vocab.filter(w=>{
-        const m=w.word.toLowerCase().includes(search)||w.meaning.toLowerCase().includes(search)||(w.arabic||'').includes(search);
-        if(!m)return false;
-        if(currentFilter==='all')return true;
-        if(currentFilter==='due')return isDue(w);
-        if(currentFilter==='new')return !w.nextReview;
-        if(currentFilter==='mastered')return(w.level||0)>=4;
-        return w.weaknesses&&w.weaknesses.includes(currentFilter);
+    const search = document.getElementById('search-input').value.toLowerCase();
+    const words  = vocab.filter(w => {
+        const hit = w.word.toLowerCase().includes(search)
+                 || w.meaning.toLowerCase().includes(search)
+                 || (w.arabic||'').includes(search);
+        if (!hit) return false;
+        if (currentFilter==='all')      return true;
+        if (currentFilter==='due')      return isDue(w);
+        if (currentFilter==='new')      return !w.nextReview;
+        if (currentFilter==='mastered') return (w.level||0) >= 4;
+        return w.weaknesses && w.weaknesses.includes(currentFilter);
     });
-    const empty=document.getElementById('library-empty'),table=document.getElementById('library-table'),body=document.getElementById('library-body');
-    if(!words.length){empty.style.display='block';table.style.display='none';return;}
-    empty.style.display='none';table.style.display='table';
-    const ll=['New','Learning','Reviewing','Advanced','Mastered'];
-    body.innerHTML=words.map(w=>`
+
+    const empty = document.getElementById('library-empty');
+    const table = document.getElementById('library-table');
+    const body  = document.getElementById('library-body');
+    if (!words.length) { empty.style.display='block'; table.style.display='none'; return; }
+    empty.style.display = 'none'; table.style.display = 'table';
+
+    const ll = ['New','Learning','Reviewing','Advanced','Mastered'];
+    body.innerHTML = words.map(w => `
         <tr>
-            <td><strong>${w.word}</strong><br><span style="font-size:0.78rem;color:var(--muted)">${w.ipa||''}</span><br><span style="font-size:0.78rem;color:var(--muted)">${w.chunks||''}</span></td>
+            <td>
+                <strong>${w.word}</strong><br>
+                <span style="font-size:0.78rem;color:var(--muted)">${w.ipa||''}</span><br>
+                <span style="font-size:0.78rem;color:var(--muted)">${w.chunks||''}</span>
+            </td>
             <td style="direction:rtl;text-align:right;font-size:1rem;color:#92400E;">${w.arabic||'—'}</td>
             <td style="max-width:180px;font-size:0.85rem;">${w.meaning.substring(0,70)}${w.meaning.length>70?'...':''}</td>
             <td><span class="level-badge level-${Math.min(w.level||0,4)}">${ll[Math.min(w.level||0,4)]}</span></td>
-            <td style="font-size:0.82rem;">${w.nextReview?new Date(w.nextReview).toLocaleDateString():'Now'}</td>
+            <td style="font-size:0.82rem;">${w.nextReview ? new Date(w.nextReview).toLocaleDateString() : 'Now'}</td>
             <td>
                 <button class="btn btn-outline btn-sm" onclick="openEdit('${w.id}')">✏️</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteWord('${w.id}')" style="margin-left:0.25rem;">🗑️</button>
+                <button class="btn btn-danger btn-sm"  onclick="deleteWord('${w.id}')" style="margin-left:0.25rem;">🗑️</button>
             </td>
         </tr>`).join('');
 }
 
-function deleteWord(id){if(!confirm('Delete this word?'))return;vocab=vocab.filter(w=>w.id!==id);save();renderLibrary();updateDashboard();toast('🗑️ Word deleted.');}
+function deleteWord(id) {
+    if (!confirm('Delete this word?')) return;
+    vocab = vocab.filter(w => w.id !== id);
+    save(); renderLibrary(); updateDashboard();
+    toast('🗑️ Word deleted.');
+}
 
-function openEdit(id){
-    const w=vocab.find(x=>x.id===id);if(!w)return;
-    ['id','word','ipa','chunks','pos','meaning','arabic','sentence','collocations','mnemonic'].forEach(f=>document.getElementById(`edit-${f}`).value=w[f]||'');
+function openEdit(id) {
+    const w = vocab.find(x => x.id === id); if (!w) return;
+    ['id','word','ipa','chunks','pos','meaning','arabic','sentence','collocations','mnemonic']
+        .forEach(f => document.getElementById(`edit-${f}`).value = w[f]||'');
     document.getElementById('edit-modal').classList.add('open');
 }
-function closeModal(){document.getElementById('edit-modal').classList.remove('open');}
-function saveEdit(){
-    const id=document.getElementById('edit-id').value,idx=vocab.findIndex(w=>w.id===id);if(idx===-1)return;
-    ['word','ipa','chunks','pos','meaning','arabic','sentence','collocations','mnemonic'].forEach(f=>{vocab[idx][f]=document.getElementById(`edit-${f}`).value.trim();});
-    save();closeModal();renderLibrary();toast('✅ Word updated!');
+function closeModal() { document.getElementById('edit-modal').classList.remove('open'); }
+function saveEdit() {
+    const id  = document.getElementById('edit-id').value;
+    const idx = vocab.findIndex(w => w.id === id); if (idx===-1) return;
+    ['word','ipa','chunks','pos','meaning','arabic','sentence','collocations','mnemonic']
+        .forEach(f => vocab[idx][f] = document.getElementById(`edit-${f}`).value.trim());
+    save(); closeModal(); renderLibrary(); toast('✅ Word updated!');
 }
 
 // ══════════════════════════════════════════════
 //  EXPORT / IMPORT
 // ══════════════════════════════════════════════
-function exportJSON(){download(JSON.stringify({vocab,reviewHistory,exportDate:new Date().toISOString()},null,2),'VocabCoach_Backup.json','application/json');toast('💾 Backup saved!');}
-function exportCSV(){
-    const h=['Word','IPA','Chunks','POS','Meaning (EN)','Meaning (AR)','Sentence','Collocations','Mnemonic','Level','Next Review'];
-    const rows=vocab.map(w=>[w.word,w.ipa||'',w.chunks||'',w.pos||'',w.meaning,w.arabic||'',w.sentence||'',w.collocations||'',w.mnemonic||'',w.level||0,w.nextReview||''].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
-    download([h.join(','),...rows].join('\n'),'VocabCoach.csv','text/csv');toast('📊 CSV exported!');
+function exportJSON() {
+    download(JSON.stringify({ vocab, reviewHistory, exportDate: new Date().toISOString() }, null, 2),
+             'VocabCoach_Backup.json', 'application/json');
+    toast('💾 Backup saved!');
 }
-function importJSON(event){
-    const file=event.target.files[0];if(!file)return;
-    const reader=new FileReader();
-    reader.onload=e=>{
-        try{
-            const data=JSON.parse(e.target.result);
-            if(data.vocab&&confirm(`Import ${data.vocab.length} words? (Merges with existing library)`)){
-                const ids=new Set(vocab.map(w=>w.id));
-                data.vocab.forEach(w=>{if(!ids.has(w.id))vocab.push(w);});
-                if(data.reviewHistory)reviewHistory.push(...data.reviewHistory);
-                save();renderLibrary();updateDashboard();toast(`✅ Imported ${data.vocab.length} words!`);
+function exportCSV() {
+    const h = ['Word','IPA','Chunks','POS','Meaning (EN)','Meaning (AR)','Sentence','Collocations','Mnemonic','Level','Next Review'];
+    const rows = vocab.map(w =>
+        [w.word,w.ipa||'',w.chunks||'',w.pos||'',w.meaning,w.arabic||'',
+         w.sentence||'',w.collocations||'',w.mnemonic||'',w.level||0,w.nextReview||'']
+        .map(v => `"${String(v).replace(/"/g,'""')}"`).join(','));
+    download([h.join(','), ...rows].join('\n'), 'VocabCoach.csv', 'text/csv');
+    toast('📊 CSV exported!');
+}
+function importJSON(event) {
+    const file = event.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (data.vocab && confirm(`Import ${data.vocab.length} words?`)) {
+                const ids = new Set(vocab.map(w => w.id));
+                data.vocab.forEach(w => { if (!ids.has(w.id)) vocab.push(w); });
+                if (data.reviewHistory) reviewHistory.push(...data.reviewHistory);
+                save(); renderLibrary(); updateDashboard();
+                toast(`✅ Imported ${data.vocab.length} words!`);
             }
-        }catch{toast('❌ Invalid backup file.');}
+        } catch { toast('❌ Invalid backup file.'); }
     };
-    reader.readAsText(file);event.target.value='';
+    reader.readAsText(file);
+    event.target.value = '';
 }
-function download(content,filename,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=filename;a.click();}
+function download(content, filename, type) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([content], { type }));
+    a.download = filename; a.click();
+}
 
 // ══════════════════════════════════════════════
 //  UTILS
 // ══════════════════════════════════════════════
-function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
-function toast(msg,dur=2800){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),dur);}
+function shuffle(arr) {
+    for (let i = arr.length-1; i > 0; i--) {
+        const j = Math.floor(Math.random()*(i+1));
+        [arr[i],arr[j]] = [arr[j],arr[i]];
+    }
+    return arr;
+}
+function toast(msg, dur=2800) {
+    const el = document.getElementById('toast');
+    el.textContent = msg; el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), dur);
+}
 
-// ── INIT ──
 load();
 updateDashboard();
 </script>
