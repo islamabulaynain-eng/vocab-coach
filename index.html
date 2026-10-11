@@ -30,7 +30,7 @@
         input, textarea, select { width: 100%; padding: 0.7rem 0.9rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.95rem; transition: border 0.2s; background: white; }
         input:focus, textarea:focus { outline: none; border-color: var(--primary); }
         textarea { resize: vertical; min-height: 75px; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-row  { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
         @media(max-width:550px){ .form-row,.field-row { grid-template-columns: 1fr; } }
         .btn { padding: 0.65rem 1.3rem; border: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: 600; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.4rem; }
@@ -84,18 +84,16 @@
         .api-ok      { background: #D1FAE5; color: #065F46; }
         .api-fail    { background: #FEE2E2; color: #991B1B; }
         .api-loading { background: #FEF3C7; color: #92400E; }
-
-        /* ── Settings / Key Panel ── */
         .key-panel { background: linear-gradient(135deg,#EEF2FF,#F5F3FF); border: 2px solid var(--primary); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
         .key-panel h4 { color: var(--primary); margin-bottom: 0.75rem; font-size: 1rem; }
-        .key-input-row { display: flex; gap: 0.5rem; align-items: center; }
-        .key-input-row input { flex: 1; font-family: monospace; font-size: 0.9rem; letter-spacing: 1px; }
+        .key-input-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+        .key-input-row input { flex: 1; font-family: monospace; font-size: 0.9rem; min-width: 200px; }
         .key-status { font-size: 0.82rem; margin-top: 0.5rem; }
         .key-ok   { color: var(--success); }
         .key-none { color: var(--muted); }
         .key-bad  { color: var(--danger); }
         .gemini-badge { display: inline-flex; align-items: center; gap: 0.3rem; background: linear-gradient(90deg,#4F46E5,#7C3AED); color: white; padding: 0.2rem 0.65rem; border-radius: 99px; font-size: 0.78rem; font-weight: 700; }
-
+        .model-info { font-size: 0.78rem; color: var(--muted); margin-top: 0.35rem; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
         .stat-box { background: var(--primary-light); padding: 1.25rem; border-radius: 10px; text-align: center; border-left: 4px solid var(--primary); }
         .stat-box h3 { font-size: 2rem; color: var(--primary); margin: 0 0 0.25rem; }
@@ -163,6 +161,9 @@
         .step.done   { background: var(--success);  color: white; }
         .step-line { flex: 1; height: 2px; background: var(--border); }
         .step-line.done { background: var(--success); }
+        .available-models { background: #f9fafb; border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; margin-top: 0.75rem; font-size: 0.82rem; max-height: 150px; overflow-y: auto; display: none; }
+        .available-models li { padding: 0.2rem 0; color: var(--muted); list-style: none; }
+        .available-models li.usable { color: var(--success); font-weight: 600; }
     </style>
 </head>
 <body>
@@ -203,11 +204,10 @@
 <div id="settings" class="section">
     <div class="card">
         <h2>⚙️ Settings</h2>
-
         <div class="key-panel">
             <h4>🤖 Gemini AI — Word Lookup Engine</h4>
             <p class="text-muted" style="margin-bottom:1rem;font-size:0.88rem;">
-                Gemini gives you rich definitions, Arabic translation, IPA, collocations, example sentences and mnemonics — all in one reliable call. It's free for personal use.
+                Gemini gives rich definitions, Arabic translation, IPA, collocations, example sentences and mnemonics — all in one reliable call. Free for personal use.
             </p>
             <div class="info-box" style="margin-bottom:1rem;">
                 <strong>📋 How to get your free key:</strong><br>
@@ -220,20 +220,19 @@
             <div class="key-input-row">
                 <input type="password" id="gemini-key-input" placeholder="AIzaSy…" autocomplete="off">
                 <button class="btn btn-primary btn-sm" onclick="saveGeminiKey()">💾 Save</button>
-                <button class="btn btn-outline btn-sm" onclick="testGeminiKey()">🔌 Test</button>
+                <button class="btn btn-outline btn-sm" onclick="testGeminiKey()">🔌 Test & Find Model</button>
                 <button class="btn btn-danger btn-sm" onclick="clearGeminiKey()">🗑️</button>
             </div>
-            <div class="key-status" id="key-status">
-                <span class="key-none">No key saved yet.</span>
-            </div>
+            <div class="key-status" id="key-status"><span class="key-none">No key saved yet.</span></div>
+            <div class="model-info" id="model-info"></div>
+            <ul class="available-models" id="available-models"></ul>
         </div>
 
         <div class="card" style="background:#f9fafb;box-shadow:none;border:1px solid var(--border);">
             <h4 style="margin-bottom:0.75rem;color:var(--primary);">🔒 Privacy & Security</h4>
             <ul style="padding-left:1.25rem;line-height:2;font-size:0.9rem;color:var(--muted);">
                 <li>Your API key is stored <strong>only in your browser</strong> (localStorage)</li>
-                <li>It is <strong>never sent</strong> to any server except Google's Gemini API</li>
-                <li>No account or login required for this app</li>
+                <li>It is <strong>never sent</strong> to any server except Google's Gemini API directly</li>
                 <li>All your vocabulary data stays on your device</li>
             </ul>
         </div>
@@ -255,42 +254,35 @@
 <div id="add" class="section">
 <div class="card">
     <h2>➕ Smart Word Lookup</h2>
-
     <div id="no-key-warning" class="info-box" style="display:none;">
         ⚠️ <strong>No Gemini API key set.</strong>
-        <a href="#" onclick="showTab('settings')" style="color:var(--primary);font-weight:700;">Go to Settings → add your free key</a>
-        for the best experience. The app will try fallback APIs in the meantime.
+        <a href="#" onclick="showTab('settings')" style="color:var(--primary);font-weight:700;">Go to ⚙️ Settings → add your free key</a>
+        for the best experience. Fallback APIs will be tried in the meantime.
     </div>
-
     <div id="gemini-active-badge" style="display:none;margin-bottom:1rem;">
         <span class="gemini-badge">✨ Gemini AI Active</span>
-        <span class="text-muted" style="font-size:0.82rem;margin-left:0.5rem;">Powered by Google Gemini</span>
+        <span class="text-muted" style="font-size:0.82rem;margin-left:0.5rem;" id="active-model-label"></span>
     </div>
-
     <div class="api-status" id="api-status"></div>
     <div class="step-indicator">
         <div class="step active" id="step1">1</div><div class="step-line" id="line1"></div>
         <div class="step" id="step2">2</div><div class="step-line" id="line2"></div>
         <div class="step" id="step3">3</div>
     </div>
-
     <div class="word-search-wrap">
         <input type="text" id="inp-word" placeholder="Type any English word…" onkeydown="if(event.key==='Enter') lookupWord()">
         <button class="btn btn-primary" onclick="lookupWord()" style="white-space:nowrap;">🔍 Lookup</button>
     </div>
-
     <div id="lookup-loading" style="display:none;" class="loading-wrap">
         <div class="spinner"></div>
-        <p class="text-muted" id="loading-msg">Fetching with Gemini AI…</p>
+        <p class="text-muted" id="loading-msg">Asking Gemini AI…</p>
     </div>
     <div id="lookup-error" style="display:none;" class="error-box"></div>
-
     <div id="lookup-panel">
         <div class="lookup-header">
             <span class="lookup-word" id="lk-word"></span>
             <span class="lookup-ipa"  id="lk-ipa"></span>
             <span class="lookup-pos"  id="lk-pos"></span>
-            <button class="audio-btn" id="lk-audio-btn" onclick="playAudio()" style="display:none;">🔊</button>
         </div>
         <div style="margin-bottom:1rem;">
             <span class="text-muted" style="font-size:0.85rem;">Syllables: </span>
@@ -458,7 +450,7 @@
     </div>
 </div>
 
-</div>
+</div><!-- /container -->
 
 <!-- EDIT MODAL -->
 <div class="modal-overlay" id="edit-modal">
@@ -487,385 +479,353 @@
 
 <script>
 // ══════════════════════════════════════════════
-//  DATA & STORAGE
+//  DATA
 // ══════════════════════════════════════════════
 let vocab=[], reviewHistory=[], sessionQueue=[], sessionIdx=0;
 let sessionStats={done:0,correct:0,forgot:0};
 let currentWord=null, hintsUsed=[], selectedReviewWeaknesses=[], addWeaknesses=[];
-let currentFilter='all', youglishWidget=null, streak=0, currentAudioUrl=null;
+let currentFilter='all', youglishWidget=null, streak=0;
+let workingModel = null; // cached working model name
 const INTERVALS=[1,3,7,14,21,30,60,90];
 
 function save(){localStorage.setItem('vocabCoach_vocab',JSON.stringify(vocab));localStorage.setItem('vocabCoach_history',JSON.stringify(reviewHistory));localStorage.setItem('vocabCoach_streak',streak);}
-function load(){vocab=JSON.parse(localStorage.getItem('vocabCoach_vocab')||'[]');reviewHistory=JSON.parse(localStorage.getItem('vocabCoach_history')||'[]');streak=parseInt(localStorage.getItem('vocabCoach_streak')||'0');}
+function load(){vocab=JSON.parse(localStorage.getItem('vocabCoach_vocab')||'[]');reviewHistory=JSON.parse(localStorage.getItem('vocabCoach_history')||'[]');streak=parseInt(localStorage.getItem('vocabCoach_streak')||'0');workingModel=localStorage.getItem('vocabCoach_model')||null;}
+function getKey(){ return localStorage.getItem('vocabCoach_geminiKey')||''; }
 
 // ══════════════════════════════════════════════
-//  GEMINI KEY MANAGEMENT
+//  GEMINI — DYNAMIC MODEL DISCOVERY
 // ══════════════════════════════════════════════
-function getKey(){ return localStorage.getItem('vocabCoach_geminiKey') || ''; }
 
+// Step 1: fetch all models from Google and find one that supports generateContent
+async function discoverWorkingModel(key) {
+    const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${key}`;
+    const res = await fetch(listUrl);
+    if (!res.ok) {
+        const e = await res.json().catch(()=>({}));
+        throw new Error(e?.error?.message || `HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    const all  = (data.models || []);
+
+    // Filter to models that support generateContent and prefer flash/pro
+    const usable = all.filter(m =>
+        (m.supportedGenerationMethods || []).includes('generateContent') &&
+        (m.name.includes('flash') || m.name.includes('pro')) &&
+        !m.name.includes('vision') &&
+        !m.name.includes('embedding') &&
+        !m.name.includes('aqa')
+    );
+
+    // Sort: prefer flash (faster/cheaper), then newest version number
+    usable.sort((a, b) => {
+        const aFlash = a.name.includes('flash') ? 0 : 1;
+        const bFlash = b.name.includes('flash') ? 0 : 1;
+        if (aFlash !== bFlash) return aFlash - bFlash;
+        return b.name.localeCompare(a.name); // newer version first
+    });
+
+    return { usable, all };
+}
+
+// Step 2: test a specific model with a simple prompt
+async function testModel(modelName, key) {
+    const modelId = modelName.replace('models/', '');
+    const url  = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${key}`;
+    const body = { contents:[{parts:[{text:'Reply with the word OK only.'}]}], generationConfig:{maxOutputTokens:10} };
+    const res  = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    if (!res.ok) {
+        const e = await res.json().catch(()=>({}));
+        throw new Error(e?.error?.message || `HTTP ${res.status}`);
+    }
+    const d = await res.json();
+    return d?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+}
+
+// Step 3: find & cache the first model that actually works
+async function findWorkingModel(key) {
+    if (workingModel) {
+        // Verify cached model still works
+        try { await testModel(workingModel, key); return workingModel; } catch(e) { workingModel = null; }
+    }
+    const { usable } = await discoverWorkingModel(key);
+    for (const m of usable) {
+        try {
+            await testModel(m.name, key);
+            workingModel = m.name.replace('models/','');
+            localStorage.setItem('vocabCoach_model', workingModel);
+            console.log('✅ Working model:', workingModel);
+            return workingModel;
+        } catch(e) { console.warn(`❌ ${m.name}: ${e.message}`); }
+    }
+    throw new Error('No working Gemini model found for your API key.');
+}
+
+// Main Gemini call — always uses a verified working model
+async function callGemini(prompt, key) {
+    const k = key || getKey();
+    if (!k) throw new Error('No API key set.');
+    const model = await findWorkingModel(k);
+    const url   = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${k}`;
+    const body  = { contents:[{parts:[{text:prompt}]}], generationConfig:{temperature:0.3, maxOutputTokens:1500} };
+    const res   = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    if (!res.ok) {
+        const e = await res.json().catch(()=>({}));
+        // If this model stopped working, clear cache and retry once
+        if (e?.error?.code === 404 || e?.error?.code === 400) {
+            workingModel = null;
+            localStorage.removeItem('vocabCoach_model');
+            return callGemini(prompt, k); // retry with fresh discovery
+        }
+        throw new Error(e?.error?.message || `HTTP ${res.status}`);
+    }
+    const d = await res.json();
+    return d?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+}
+
+// ══════════════════════════════════════════════
+//  KEY MANAGEMENT UI
+// ══════════════════════════════════════════════
 function saveGeminiKey(){
-    const k = document.getElementById('gemini-key-input').value.trim();
-    if (!k) { toast('⚠️ Please paste your API key first.'); return; }
-    if (!k.startsWith('AIza')) { toast('⚠️ Key should start with "AIza…"'); return; }
-    localStorage.setItem('vocabCoach_geminiKey', k);
+    const k=document.getElementById('gemini-key-input').value.trim();
+    if(!k){toast('⚠️ Please paste your API key first.');return;}
+    if(!k.startsWith('AIza')){toast('⚠️ Key should start with "AIza…"');return;}
+    localStorage.setItem('vocabCoach_geminiKey',k);
+    workingModel=null; localStorage.removeItem('vocabCoach_model'); // reset cached model
     updateKeyStatus();
-    toast('✅ Gemini key saved!');
+    toast('✅ Key saved! Click "Test & Find Model" to verify.');
 }
 
 function clearGeminiKey(){
-    if (!confirm('Remove your Gemini API key?')) return;
+    if(!confirm('Remove your Gemini API key?'))return;
     localStorage.removeItem('vocabCoach_geminiKey');
-    document.getElementById('gemini-key-input').value = '';
+    localStorage.removeItem('vocabCoach_model');
+    workingModel=null;
+    document.getElementById('gemini-key-input').value='';
     updateKeyStatus();
     toast('🗑️ Key removed.');
 }
 
 async function testGeminiKey(){
-    const k = document.getElementById('gemini-key-input').value.trim() || getKey();
-    if (!k) { toast('⚠️ No key to test. Paste your key first.'); return; }
-    const el = document.getElementById('key-status');
-    el.innerHTML = '<span class="key-none">⏳ Testing key…</span>';
+    const k=document.getElementById('gemini-key-input').value.trim()||getKey();
+    if(!k){toast('⚠️ No key to test.');return;}
+    const statusEl=document.getElementById('key-status');
+    const modelEl =document.getElementById('model-info');
+    const listEl  =document.getElementById('available-models');
+    statusEl.innerHTML='<span class="key-none">⏳ Discovering available models…</span>';
+    modelEl.textContent=''; listEl.style.display='none'; listEl.innerHTML='';
+
     try {
-        const result = await callGemini('Say "OK" only.', k);
-        if (result) {
-            el.innerHTML = '<span class="key-ok">✅ Key works! Gemini is ready.</span>';
-            toast('✅ Gemini key is valid!');
-        } else { throw new Error('Empty response'); }
+        // Show all available models
+        const { usable, all } = await discoverWorkingModel(k);
+        listEl.style.display='block';
+        listEl.innerHTML = all
+            .filter(m=>(m.supportedGenerationMethods||[]).includes('generateContent'))
+            .map(m=>{
+                const isUsable = usable.some(u=>u.name===m.name);
+                return `<li class="${isUsable?'usable':''}">${isUsable?'✅':'○'} ${m.name.replace('models/','')}</li>`;
+            }).join('');
+
+        statusEl.innerHTML='<span class="key-none">⏳ Testing models one by one…</span>';
+
+        // Find and test working model
+        workingModel=null; localStorage.removeItem('vocabCoach_model');
+        const model = await findWorkingModel(k);
+
+        statusEl.innerHTML=`<span class="key-ok">✅ Key works! Using model: <strong>${model}</strong></span>`;
+        modelEl.textContent=`Auto-selected from ${usable.length} available models`;
+        toast(`✅ Gemini ready! Model: ${model}`);
+        updateKeyStatus();
     } catch(e) {
-        el.innerHTML = `<span class="key-bad">❌ Key failed: ${e.message}</span>`;
+        statusEl.innerHTML=`<span class="key-bad">❌ ${e.message}</span>`;
+        modelEl.textContent='';
         toast('❌ Key test failed.');
     }
 }
 
 function updateKeyStatus(){
-    const k  = getKey();
-    const el = document.getElementById('key-status');
-    if (!el) return;
-    if (k) {
-        const masked = k.slice(0,8) + '••••••••' + k.slice(-4);
-        el.innerHTML = `<span class="key-ok">✅ Key saved: <code>${masked}</code></span>`;
-        document.getElementById('gemini-key-input').value = k;
+    const k=getKey();
+    const el=document.getElementById('key-status');
+    if(!el)return;
+    if(k){
+        const masked=k.slice(0,8)+'••••••••'+k.slice(-4);
+        const model=workingModel||localStorage.getItem('vocabCoach_model')||'';
+        el.innerHTML=`<span class="key-ok">✅ Key saved: <code>${masked}</code>${model?' | Model: <strong>'+model+'</strong>':''}</span>`;
+        document.getElementById('gemini-key-input').value=k;
     } else {
-        el.innerHTML = '<span class="key-none">No key saved yet.</span>';
+        el.innerHTML='<span class="key-none">No key saved yet.</span>';
     }
-    // Show/hide badge and warning on Add tab
-    const hasBadge = document.getElementById('gemini-active-badge');
-    const hasWarn  = document.getElementById('no-key-warning');
-    if (hasBadge) hasBadge.style.display = k ? 'block' : 'none';
-    if (hasWarn)  hasWarn.style.display  = k ? 'none'  : 'block';
+    const badge=document.getElementById('gemini-active-badge');
+    const warn =document.getElementById('no-key-warning');
+    const label=document.getElementById('active-model-label');
+    if(badge){badge.style.display=k?'block':'none';}
+    if(warn) {warn.style.display=k?'none':'block';}
+    if(label&&workingModel){label.textContent=`Model: ${workingModel}`;}
 }
 
 // ══════════════════════════════════════════════
-//  GEMINI API CALL
+//  WORD LOOKUP WITH GEMINI
 // ══════════════════════════════════════════════
-async function callGemini(prompt, key) {
-    const k = key || getKey();
-    if (!k) throw new Error('No API key');
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/callGemini:generateContent?key=${k}`;
-    const body = {
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.3, maxOutputTokens: 1024 }
-    };
-    const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-    });
-    if (!res.ok) {
-        const err = await res.json().catch(()=>({}));
-        throw new Error(err?.error?.message || `HTTP ${res.status}`);
-    }
-    const data = await res.json();
-    return data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-}
-
-// ══════════════════════════════════════════════
-//  GEMINI WORD LOOKUP
-// ══════════════════════════════════════════════
-async function lookupWithGemini(word) {
-    const prompt = `
+async function lookupWithGemini(word){
+    const prompt=`
 You are a vocabulary assistant for an English learner whose native language is Arabic.
 Look up the word: "${word}"
 
-Reply with ONLY a valid JSON object — no markdown, no code fences, no explanation.
+Reply with ONLY a valid JSON object. No markdown, no code fences, no explanation outside the JSON.
 
 {
   "word": "${word}",
-  "ipa": "/IPA transcription/",
+  "ipa": "/IPA here/",
   "syllables": "syl·la·bles",
   "meanings": [
     {
       "partOfSpeech": "noun",
-      "definition": "Clear English definition suitable for a learner",
-      "example": "A natural example sentence using the word"
+      "definition": "Clear learner-friendly English definition",
+      "example": "A natural sentence using ___ where the word goes"
     }
   ],
-  "arabic": "الترجمة العربية الأكثر شيوعاً",
-  "arabicAlternatives": ["بديل١", "بديل٢"],
-  "synonyms": ["syn1", "syn2", "syn3"],
-  "antonyms": ["ant1", "ant2"],
-  "collocations": ["collocation 1", "collocation 2", "collocation 3", "collocation 4"],
-  "mnemonic": "A creative memory trick to remember this word"
+  "arabic": "الترجمة العربية",
+  "arabicAlternatives": ["بديل١","بديل٢"],
+  "synonyms": ["word1","word2","word3"],
+  "antonyms": ["word1","word2"],
+  "collocations": ["phrase 1","phrase 2","phrase 3","phrase 4"],
+  "mnemonic": "A creative memory trick linking sound or image to meaning"
 }
 
 Rules:
-- Include 1–4 meanings covering different parts of speech if applicable
+- Include 1-4 meanings for different parts of speech if applicable
+- Example sentence must use ___ as placeholder for the word
 - Arabic should be natural Modern Standard Arabic
-- Collocations should be the most common real-world combinations
-- Mnemonic should relate to sound, image, or story
-- Example sentence should have a blank "___" where the word goes
+- Collocations = most common real-world word combinations
+- Mnemonic should be vivid and memorable for an Arabic speaker
 `.trim();
 
-    const raw  = await callGemini(prompt);
-    // Strip any accidental markdown fences
-    const json = raw.replace(/```json|```/g,'').trim();
+    const raw=await callGemini(prompt);
+    const json=raw.replace(/```json|```/g,'').trim();
     return JSON.parse(json);
 }
 
 // ══════════════════════════════════════════════
-//  FALLBACK: Datamuse + MyMemory
+//  FALLBACK: Datamuse + MyMemory (no key needed)
 // ══════════════════════════════════════════════
-function timedFetch(url, ms) {
-    return new Promise((resolve, reject) => {
-        const ctrl = new AbortController();
-        const id = setTimeout(()=>{ ctrl.abort(); reject(new Error('Timeout')); }, ms);
-        fetch(url, { signal: ctrl.signal })
-            .then(r=>{ clearTimeout(id); resolve(r); })
-            .catch(e=>{ clearTimeout(id); reject(e); });
-    });
+function timedFetch(url,ms){return new Promise((resolve,reject)=>{const ctrl=new AbortController();const id=setTimeout(()=>{ctrl.abort();reject(new Error('Timeout'));},ms);fetch(url,{signal:ctrl.signal}).then(r=>{clearTimeout(id);resolve(r);}).catch(e=>{clearTimeout(id);reject(e);});});}
+
+async function lookupWithFallback(word){
+    const w=encodeURIComponent(word);
+    let defs=[],syns=[],ants=[],arabic='';
+    try{const r=await timedFetch(`https://api.datamuse.com/words?sp=${w}&md=d&max=1`,10000);const j=await r.json();if(j[0]?.defs)defs=j[0].defs;}catch(e){}
+    try{const r=await timedFetch(`https://api.datamuse.com/words?rel_syn=${w}&max=8`,8000);const j=await r.json();syns=j.map(x=>x.word);}catch(e){}
+    try{const r=await timedFetch(`https://api.datamuse.com/words?rel_ant=${w}&max=6`,8000);const j=await r.json();ants=j.map(x=>x.word);}catch(e){}
+    try{const r=await timedFetch(`https://api.mymemory.translated.net/get?q=${w}&langpair=en|ar`,10000);const j=await r.json();arabic=j?.responseData?.translatedText||'';}catch(e){}
+    if(!defs.length)throw new Error('No definitions found. Check spelling or add a Gemini key in ⚙️ Settings.');
+    const posMap={};
+    defs.forEach(d=>{const parts=d.split('\t'),pos=parts[0]||'unknown',def=parts[1]||d;if(!posMap[pos])posMap[pos]=[];posMap[pos].push({partOfSpeech:expandPos(pos),definition:def,example:`She used the word ___ perfectly.`});});
+    return{word,ipa:'',syllables:syllabify(word),meanings:Object.values(posMap).flat().slice(0,4),arabic,arabicAlternatives:[],synonyms:syns,antonyms:ants,collocations:[],mnemonic:'',_fallback:true};
 }
-
-async function lookupWithFallback(word) {
-    const w = encodeURIComponent(word);
-    let defs=[], syns=[], ants=[], arabic='';
-
-    // Datamuse definitions
-    try {
-        const r = await timedFetch(`https://api.datamuse.com/words?sp=${w}&md=d&max=1`, 10000);
-        const j = await r.json();
-        if (j[0]?.defs) defs = j[0].defs;
-    } catch(e) {}
-
-    // Datamuse synonyms
-    try {
-        const r = await timedFetch(`https://api.datamuse.com/words?rel_syn=${w}&max=8`, 8000);
-        const j = await r.json(); syns = j.map(x=>x.word);
-    } catch(e) {}
-
-    // Datamuse antonyms
-    try {
-        const r = await timedFetch(`https://api.datamuse.com/words?rel_ant=${w}&max=6`, 8000);
-        const j = await r.json(); ants = j.map(x=>x.word);
-    } catch(e) {}
-
-    // MyMemory translation
-    try {
-        const r = await timedFetch(`https://api.mymemory.translated.net/get?q=${w}&langpair=en|ar`, 10000);
-        const j = await r.json();
-        arabic = j?.responseData?.translatedText || '';
-    } catch(e) {}
-
-    if (!defs.length) throw new Error('No definitions found. Check spelling or try a different word.');
-
-    // Convert Datamuse format
-    const posMap = {};
-    defs.forEach(d => {
-        const parts = d.split('\t'), pos = parts[0]||'unknown', def = parts[1]||d;
-        if (!posMap[pos]) posMap[pos]=[];
-        posMap[pos].push({ partOfSpeech: expandPos(pos), definition: def, example: `___ is a great example of ${word}.` });
-    });
-
-    return {
-        word, ipa: '', syllables: syllabify(word),
-        meanings: Object.values(posMap).flat().slice(0,4),
-        arabic, arabicAlternatives: [],
-        synonyms: syns, antonyms: ants,
-        collocations: [], mnemonic: '',
-        _source: 'fallback'
-    };
-}
-
 function expandPos(p){return{n:'noun',v:'verb',adj:'adjective',adv:'adverb',prep:'preposition',conj:'conjunction',interj:'interjection'}[p]||p;}
 
 // ══════════════════════════════════════════════
 //  LOOKUP ORCHESTRATOR
 // ══════════════════════════════════════════════
-async function lookupWord() {
-    const word = document.getElementById('inp-word').value.trim();
-    if (!word) { toast('⚠️ Please enter a word first!'); return; }
-
-    document.getElementById('lookup-loading').style.display = 'block';
-    document.getElementById('lookup-panel').style.display   = 'none';
-    document.getElementById('lookup-error').style.display   = 'none';
+async function lookupWord(){
+    const word=document.getElementById('inp-word').value.trim();
+    if(!word){toast('⚠️ Please enter a word first!');return;}
+    document.getElementById('lookup-loading').style.display='block';
+    document.getElementById('lookup-panel').style.display='none';
+    document.getElementById('lookup-error').style.display='none';
     setStep(1);
-
-    const hasKey = !!getKey();
-    setBadges([{ label: hasKey ? '✨ Gemini AI' : '📖 Dictionary', state: 'loading' }]);
-
-    let result = null;
-
-    if (hasKey) {
-        try {
-            document.getElementById('loading-msg').textContent = '✨ Asking Gemini AI…';
-            result = await lookupWithGemini(word);
-            setBadgeState(0, 'ok');
-        } catch(e) {
-            console.warn('Gemini failed:', e.message);
-            setBadgeState(0, 'fail');
-            // Fall through to fallback
+    const hasKey=!!getKey();
+    setBadges([{label:hasKey?'✨ Gemini AI':'📖 Dictionary',state:'loading'}]);
+    let result=null;
+    if(hasKey){
+        try{
+            document.getElementById('loading-msg').textContent='✨ Asking Gemini AI…';
+            result=await lookupWithGemini(word);
+            setBadgeState(0,'ok');
+        }catch(e){
+            console.warn('Gemini failed:',e.message);
+            setBadgeState(0,'fail');
         }
     }
-
-    if (!result) {
-        try {
-            document.getElementById('loading-msg').textContent = '📖 Trying fallback dictionary…';
-            result = await lookupWithFallback(word);
-            setBadges([{ label: '📖 Fallback API', state: 'ok' }]);
-        } catch(e) {
-            document.getElementById('lookup-loading').style.display = 'none';
-            document.getElementById('lookup-error').style.display   = 'block';
-            document.getElementById('lookup-error').innerHTML =
-                `❌ <strong>Lookup failed.</strong><br><br>
-                 ${e.message}<br><br>
-                 💡 <strong>Best fix:</strong> Add a free <a href="#" onclick="showTab('settings')" style="color:var(--danger)">Gemini API key in Settings</a> — it bypasses all network issues.`;
+    if(!result){
+        try{
+            document.getElementById('loading-msg').textContent='📖 Trying fallback dictionary…';
+            result=await lookupWithFallback(word);
+            setBadges([{label:'📖 Fallback API',state:'ok'}]);
+        }catch(e){
+            document.getElementById('lookup-loading').style.display='none';
+            document.getElementById('lookup-error').style.display='block';
+            document.getElementById('lookup-error').innerHTML=
+                `❌ <strong>Lookup failed.</strong><br><br>${e.message}<br><br>
+                 💡 <strong>Best fix:</strong> Add a free <a href="#" onclick="showTab('settings')" style="color:var(--danger);font-weight:700;">Gemini API key in ⚙️ Settings</a>.`;
             return;
         }
     }
-
-    document.getElementById('lookup-loading').style.display = 'none';
-    renderGeminiResults(result);
+    document.getElementById('lookup-loading').style.display='none';
+    renderResults(result);
     setStep(2);
 }
 
 // ══════════════════════════════════════════════
-//  RENDER — unified for Gemini + fallback
+//  RENDER RESULTS
 // ══════════════════════════════════════════════
-function renderGeminiResults(r) {
-    document.getElementById('lk-word').textContent = r.word;
-    document.getElementById('lk-ipa').textContent  = r.ipa || '';
-    document.getElementById('final-ipa').value     = r.ipa || '';
-    document.getElementById('final-chunks').value  = r.syllables || syllabify(r.word);
-    document.getElementById('lk-chunks').textContent = r.syllables || syllabify(r.word);
-    currentAudioUrl = null;
-    document.getElementById('lk-audio-btn').style.display = 'none';
+function renderResults(r){
+    document.getElementById('lk-word').textContent=r.word;
+    document.getElementById('lk-ipa').textContent=r.ipa||'';
+    document.getElementById('final-ipa').value=r.ipa||'';
+    document.getElementById('final-chunks').value=r.syllables||syllabify(r.word);
+    document.getElementById('lk-chunks').textContent=r.syllables||syllabify(r.word);
 
-    // Meanings → tabs
-    const tabsEl   = document.getElementById('def-tabs');
-    const panelsEl = document.getElementById('def-panels');
-    tabsEl.innerHTML = ''; panelsEl.innerHTML = '';
-
-    const meanings = r.meanings || [];
-    meanings.forEach((m, i) => {
-        const tab = document.createElement('button');
-        tab.className = 'def-tab' + (i===0?' active':'');
-        tab.textContent = m.partOfSpeech;
-        tab.onclick = () => switchTab(i);
+    const tabsEl=document.getElementById('def-tabs');
+    const panelsEl=document.getElementById('def-panels');
+    tabsEl.innerHTML='';panelsEl.innerHTML='';
+    const meanings=r.meanings||[];
+    meanings.forEach((m,i)=>{
+        const tab=document.createElement('button');
+        tab.className='def-tab'+(i===0?' active':'');
+        tab.textContent=m.partOfSpeech;
+        tab.onclick=()=>switchTab(i);
         tabsEl.appendChild(tab);
-
-        const panel = document.createElement('div');
-        panel.className = 'def-panel' + (i===0?' active':'');
-        panel.innerHTML = `
-            <div class="definition-item selected" onclick="pickDefDirect(this,'${esc(m.definition)}','${esc(m.example||'')}','${esc(m.partOfSpeech)}')">
-                <span class="select-indicator">✅</span>
-                <div class="def-text">${m.definition}</div>
-                ${m.example ? `<div class="def-example">"${m.example}"</div>` : ''}
-            </div>`;
+        const panel=document.createElement('div');
+        panel.className='def-panel'+(i===0?' active':'');
+        panel.innerHTML=`<div class="definition-item selected" onclick="pickDef(this,'${esc(m.definition)}','${esc(m.example||'')}','${esc(m.partOfSpeech)}')">
+            <span class="select-indicator">✅</span>
+            <div class="def-text">${m.definition}</div>
+            ${m.example?`<div class="def-example">"${m.example}"</div>`:''}
+        </div>`;
         panelsEl.appendChild(panel);
     });
-
-    if (meanings.length) {
-        document.getElementById('final-meaning').value = meanings[0].definition;
-        document.getElementById('lk-pos').textContent  = meanings[0].partOfSpeech;
-        if (meanings[0].example)
-            document.getElementById('final-sentence').value = meanings[0].example;
+    if(meanings.length){
+        document.getElementById('final-meaning').value=meanings[0].definition;
+        document.getElementById('lk-pos').textContent=meanings[0].partOfSpeech;
+        if(meanings[0].example)document.getElementById('final-sentence').value=meanings[0].example;
     }
 
-    // Arabic
-    if (r.arabic) {
-        document.getElementById('ar-word').textContent   = r.arabic;
-        document.getElementById('final-arabic').value    = r.arabic;
-        const alts = [r.arabic, ...(r.arabicAlternatives||[])].filter(Boolean);
-        document.getElementById('ar-meanings').innerHTML = alts.map(t =>
-            `<span class="arabic-chip" onclick="document.getElementById('final-arabic').value='${esc(t)}';toast('✅ Arabic selected!')">${t}</span>`
-        ).join('');
-        document.getElementById('arabic-panel').style.display = 'block';
+    if(r.arabic){
+        document.getElementById('ar-word').textContent=r.arabic;
+        document.getElementById('final-arabic').value=r.arabic;
+        const alts=[r.arabic,...(r.arabicAlternatives||[])].filter(Boolean);
+        document.getElementById('ar-meanings').innerHTML=alts.map(t=>`<span class="arabic-chip" onclick="document.getElementById('final-arabic').value='${esc(t)}';toast('✅ Arabic selected!')">${t}</span>`).join('');
+        document.getElementById('arabic-panel').style.display='block';
     } else {
-        document.getElementById('arabic-panel').style.display = 'none';
-        document.getElementById('final-arabic').placeholder = 'Translation unavailable — type manually';
+        document.getElementById('arabic-panel').style.display='none';
+        document.getElementById('final-arabic').placeholder='Translation unavailable — type manually';
     }
 
-    // Synonyms / Antonyms
-    const syns = (r.synonyms||[]).slice(0,8);
-    document.getElementById('lk-synonyms').innerHTML = syns.length
-        ? syns.map(s=>`<span class="syn-chip" onclick="document.getElementById('inp-word').value='${s}';lookupWord()">${s}</span>`).join('')
-        : '<span class="text-muted">—</span>';
-
-    const ants = (r.antonyms||[]).slice(0,6);
-    document.getElementById('lk-antonyms').innerHTML = ants.length
-        ? ants.map(a=>`<span class="ant-chip">${a}</span>`).join('')
-        : '<span class="text-muted">—</span>';
-
-    // Collocations
-    const collocs = (r.collocations||[]).slice(0,8);
-    document.getElementById('lk-collocations').innerHTML = collocs.length
-        ? collocs.map(c=>`<span class="colloc-chip" style="cursor:pointer;" onclick="addColloc('${esc(c)}')">${c}</span>`).join('')
-        : '<span class="text-muted">—</span>';
-    document.getElementById('final-collocations').value = collocs.slice(0,4).join(', ');
-
-    // Mnemonic
-    if (r.mnemonic) document.getElementById('final-mnemonic').value = r.mnemonic;
-
-    document.getElementById('lookup-panel').style.display = 'block';
+    const syns=(r.synonyms||[]).slice(0,8);
+    document.getElementById('lk-synonyms').innerHTML=syns.length?syns.map(s=>`<span class="syn-chip" onclick="document.getElementById('inp-word').value='${s}';lookupWord()">${s}</span>`).join(''):'<span class="text-muted">—</span>';
+    const ants=(r.antonyms||[]).slice(0,6);
+    document.getElementById('lk-antonyms').innerHTML=ants.length?ants.map(a=>`<span class="ant-chip">${a}</span>`).join(''):'<span class="text-muted">—</span>';
+    const collocs=(r.collocations||[]).slice(0,8);
+    document.getElementById('lk-collocations').innerHTML=collocs.length?collocs.map(c=>`<span class="colloc-chip" style="cursor:pointer;" onclick="addColloc('${esc(c)}')">${c}</span>`).join(''):'<span class="text-muted">—</span>';
+    document.getElementById('final-collocations').value=collocs.slice(0,4).join(', ');
+    if(r.mnemonic)document.getElementById('final-mnemonic').value=r.mnemonic;
+    document.getElementById('lookup-panel').style.display='block';
 }
 
-async function callGemini(prompt, key) {
-    const k = key || getKey();
-    if (!k) throw new Error('No API key');
-
-    const models = [
-        'gemini-2.5-flash',
-        'gemini-2.5-pro',
-        'gemini-1.5-flash',
-        'gemini-1.5-pro',
-    ];
-
-    let lastErr;
-    for (const model of models) {
-        try {
-            const url  = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${k}`;
-            const body = {
-                contents: [{ parts: [{ text: prompt }] }],
-                generationConfig: { temperature: 0.3, maxOutputTokens: 1024 }
-            };
-            const res = await fetch(url, {
-                method:  'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify(body)
-            });
-            if (!res.ok) {
-                const err = await res.json().catch(() => ({}));
-                throw new Error(err?.error?.message || `HTTP ${res.status}`);
-            }
-            const data = await res.json();
-            const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-            if (text) {
-                console.log(`✅ Gemini model used: ${model}`);
-                return text;
-            }
-            throw new Error('Empty response');
-        } catch(e) {
-            console.warn(`❌ ${model}: ${e.message}`);
-            lastErr = e;
-        }
-    }
-    throw lastErr;
-}
-    
 function switchTab(i){document.querySelectorAll('.def-tab').forEach((t,j)=>t.classList.toggle('active',i===j));document.querySelectorAll('.def-panel').forEach((p,j)=>p.classList.toggle('active',i===j));}
-function pickDefDirect(el,def,ex,pos){document.querySelectorAll('.definition-item').forEach(d=>{d.classList.remove('selected');d.querySelector('.select-indicator').style.display='none';});el.classList.add('selected');el.querySelector('.select-indicator').style.display='inline';document.getElementById('final-meaning').value=def;document.getElementById('lk-pos').textContent=pos;if(ex)document.getElementById('final-sentence').value=ex;toast('✅ Definition selected!');}
+function pickDef(el,def,ex,pos){document.querySelectorAll('.definition-item').forEach(d=>{d.classList.remove('selected');d.querySelector('.select-indicator').style.display='none';});el.classList.add('selected');el.querySelector('.select-indicator').style.display='inline';document.getElementById('final-meaning').value=def;document.getElementById('lk-pos').textContent=pos;if(ex)document.getElementById('final-sentence').value=ex;toast('✅ Definition selected!');}
 function addColloc(c){const el=document.getElementById('final-collocations');el.value=el.value.trim()?el.value.trim()+', '+c:c;toast('🔗 Collocation added!');}
 function syllabify(word){const v=/[aeiouy]/i;let o=word[0]||'';for(let i=1;i<word.length-1;i++){o+=word[i];if(v.test(word[i])&&!v.test(word[i+1]||'')&&i<word.length-2)o+='·';}o+=word.length>1?word[word.length-1]:'';return o.replace(/·+/g,'·').replace(/^·|·$/g,'')||word;}
-function playAudio(){if(!currentAudioUrl)return;const url=currentAudioUrl.startsWith('//')?'https:'+currentAudioUrl:currentAudioUrl;new Audio(url).play().catch(()=>toast('⚠️ Could not play audio.'));}
 function setBadges(items){document.getElementById('api-status').innerHTML=items.map((it,i)=>`<span class="api-badge api-${it.state}" id="api-badge-${i}">${it.label} ${it.state==='loading'?'⏳':it.state==='ok'?'✅':'❌'}</span>`).join('');}
 function setBadgeState(i,state){const el=document.getElementById(`api-badge-${i}`);if(!el)return;const icons={ok:'✅',fail:'❌',loading:'⏳'};el.className=`api-badge api-${state}`;el.textContent=el.textContent.replace(/[✅❌⏳]/g,'')+icons[state];}
 function setStep(n){for(let i=1;i<=3;i++){const s=document.getElementById(`step${i}`);if(i<n){s.className='step done';s.textContent='✓';}else if(i===n){s.className='step active';s.textContent=i;}else{s.className='step';s.textContent=i;}if(i<3)document.getElementById(`line${i}`).className='step-line'+(i<n?' done':'');}}
@@ -882,7 +842,7 @@ function toggleReviewTag(el,v){el.classList.toggle('selected');selectedReviewWea
 // ══════════════════════════════════════════════
 //  NAVIGATION
 // ══════════════════════════════════════════════
-function showTab(tab){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-links button').forEach(b=>b.classList.remove('active'));document.getElementById(tab).classList.add('active');const idx=['dashboard','add','practice','library','settings'].indexOf(tab);if(idx>=0)document.querySelectorAll('.nav-links button')[idx].classList.add('active');if(tab==='dashboard')updateDashboard();if(tab==='library')renderLibrary();if(tab==='settings')updateKeyStatus();if(tab==='add')updateKeyStatus();}
+function showTab(tab){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-links button').forEach(b=>b.classList.remove('active'));document.getElementById(tab).classList.add('active');const idx=['dashboard','add','practice','library','settings'].indexOf(tab);if(idx>=0)document.querySelectorAll('.nav-links button')[idx].classList.add('active');if(tab==='dashboard')updateDashboard();if(tab==='library')renderLibrary();if(tab==='settings'||tab==='add')updateKeyStatus();}
 
 // ══════════════════════════════════════════════
 //  DASHBOARD
