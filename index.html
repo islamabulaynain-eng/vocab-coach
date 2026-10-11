@@ -598,14 +598,20 @@ async function callGemini(prompt, key) {
         );
         var listData = await listRes.json();
         if (listData && listData.models) {
-            availableModels = listData.models
-                .filter(function(m) {
-                    return m.supportedGenerationMethods &&
-                           m.supportedGenerationMethods.indexOf('generateContent') !== -1 &&
-                           m.name.indexOf('gemini') !== -1 &&
-                           m.name.indexOf('embedding') === -1 &&
-                           m.name.indexOf('aqa') === -1;
-                })
+availableModels = listData.models
+    .filter(function(m) {
+        var name = m.name.toLowerCase();
+        return m.supportedGenerationMethods &&
+               m.supportedGenerationMethods.indexOf('generateContent') !== -1 &&
+               name.indexOf('gemini') !== -1 &&
+               name.indexOf('embedding') === -1 &&
+               name.indexOf('aqa') === -1 &&
+               name.indexOf('tts') === -1 &&
+               name.indexOf('vision') === -1 &&
+               name.indexOf('image') === -1 &&
+               name.indexOf('exp') === -1 &&
+               name.indexOf('preview') === -1;
+    })
                 .map(function(m) {
                     // m.name is like "models/gemini-2.5-flash" — strip the prefix
                     return m.name.replace('models/', '');
