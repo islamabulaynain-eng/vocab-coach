@@ -590,13 +590,60 @@ async function callGemini(prompt, key) {
     var k = key || getKey();
     if (!k) throw new Error('No API key');
 
-var models = [
-    'gemini-2.5-flash-preview-05-20',
-    'gemini-2.5-pro-preview-06-05',
-    'gemini-2.0-flash-lite',
-    'gemini-2.0-flash'
-];
+    // Step 1: Fetch available models from Google directly
+    var availableModels = [];
+    try {
+        var listRes = await fetch(
+            'https://generativelanguage.googleapis.com/v1beta/models?key=' + k
+        );
+        var listData = await listRes.json();
+        if (listData && listData.models) {
+            availableModels = listData.models
+                .filter(function(m) {
+                    return m.supportedGenerationMethods &&
+                           m.supportedGenerationMethods.indexOf('generateContent') !== -1 &&
+                           m.name.indexOf('gemini') !== -1 &&
+                           m.name.indexOf('embedding') === -1 &&
+                           m.name.indexOf('aqa') === -1;
+                })
+                .map(function(m) {
+                    // m.name is like "models/gemini-2.5-flash" — strip the prefix
+                    return m.name.replace('models/', '');
+                });
+        }
+    } catch(e) {
+        console.warn('Could not fetch model list:', e.message);
+    }
 
+    // Step 2: Preferred order — pick first available match
+    var preferred = [
+        'gemini-2.5-flash',
+        'gemini-2.5-pro',
+        'gemini-2.0-flash',
+        'gemini-2.0-flash-lite',
+        'gemini-1.5-flash',
+        'gemini-1.5-pro'
+    ];
+
+    var models = [];
+
+    // Add preferred models that exist in the available list
+    preferred.forEach(function(p) {
+        availableModels.forEach(function(a) {
+            if (a.indexOf(p) !== -1 && models.indexOf(a) === -1) {
+                models.push(a);
+            }
+        });
+    });
+
+    // Fallback: if nothing matched, use whatever is available
+    if (!models.length) {
+        models = availableModels.length ? availableModels : ['gemini-2.5-flash', 'gemini-2.0-flash'];
+    }
+
+    console.log('🤖 Models to try:', models);
+
+    // Step 3: Try each model until one works
     var lastErr;
     for (var i = 0; i < models.length; i++) {
         var model = models[i];
