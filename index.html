@@ -77,25 +77,20 @@
         .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .error-box { background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; line-height: 1.8; }
-        .success-box { background: #F0FDF4; border: 1px solid #BBF7D0; color: #166534; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; line-height: 1.8; }
         .api-status { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem; min-height: 1.8rem; }
         .api-badge { padding: 0.25rem 0.65rem; border-radius: 99px; font-size: 0.78rem; font-weight: 600; }
         .api-ok      { background: #D1FAE5; color: #065F46; }
         .api-fail    { background: #FEE2E2; color: #991B1B; }
         .api-loading { background: #FEF3C7; color: #92400E; }
-        .api-warn    { background: #FEF3C7; color: #92400E; }
-
-        /* Connection test panel */
         .test-panel { background: #F8FAFC; border: 1px solid var(--border); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
         .test-panel h4 { font-size: 0.88rem; color: var(--muted); margin-bottom: 0.75rem; }
         .test-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.4rem 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
         .test-row:last-child { border-bottom: none; }
         .test-label { flex: 1; }
-        .test-status { font-size: 0.82rem; font-weight: 600; min-width: 80px; text-align: right; }
+        .test-status { font-size: 0.82rem; font-weight: 600; min-width: 100px; text-align: right; }
         .test-ok   { color: var(--success); }
         .test-fail { color: var(--danger); }
         .test-wait { color: var(--warning); }
-
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
         .stat-box { background: var(--primary-light); padding: 1.25rem; border-radius: 10px; text-align: center; border-left: 4px solid var(--primary); }
         .stat-box h3 { font-size: 2rem; color: var(--primary); margin: 0 0 0.25rem; }
@@ -163,6 +158,7 @@
         .step.done   { background: var(--success);  color: white; }
         .step-line { flex: 1; height: 2px; background: var(--border); }
         .step-line.done { background: var(--success); }
+        .source-badge { font-size: 0.75rem; background: #EDE9FE; color: #5B21B6; padding: 0.15rem 0.5rem; border-radius: 99px; margin-left: 0.5rem; vertical-align: middle; }
     </style>
 </head>
 <body>
@@ -203,22 +199,22 @@
 <div class="card">
     <h2>➕ Smart Word Lookup</h2>
 
-    <!-- Connection test -->
     <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap;">
         <button class="btn btn-outline btn-sm" onclick="runConnectionTest()">🔌 Test Connection</button>
-        <span class="text-muted" style="font-size:0.82rem;">Run this first if lookup fails</span>
+        <span class="text-muted" style="font-size:0.82rem;">Run this if lookup fails</span>
     </div>
+
     <div id="test-panel" style="display:none;" class="test-panel">
-        <h4>🔌 API Connection Test</h4>
-        <div class="test-row"><span class="test-label">📖 Dictionary API (direct)</span><span class="test-status test-wait" id="t0">Testing…</span></div>
-        <div class="test-row"><span class="test-label">🌙 Translation API (direct)</span><span class="test-status test-wait" id="t1">Testing…</span></div>
-        <div class="test-row"><span class="test-label">🔀 Proxy 1 (corsproxy.io)</span><span class="test-status test-wait" id="t2">Testing…</span></div>
-        <div class="test-row"><span class="test-label">🔀 Proxy 2 (allorigins.win)</span><span class="test-status test-wait" id="t3">Testing…</span></div>
-        <div id="test-recommendation" style="margin-top:0.75rem;font-size:0.85rem;"></div>
+        <h4>🔌 API Connection Test — trying all dictionary sources</h4>
+        <div class="test-row"><span class="test-label">📖 dictionaryapi.dev (direct)</span><span class="test-status test-wait" id="t0">Waiting…</span></div>
+        <div class="test-row"><span class="test-label">📖 dictionaryapi.dev via cdn77 proxy</span><span class="test-status test-wait" id="t1">Waiting…</span></div>
+        <div class="test-row"><span class="test-label">📖 dictionaryapi.dev via jsonp.afeld.me</span><span class="test-status test-wait" id="t2">Waiting…</span></div>
+        <div class="test-row"><span class="test-label">📖 Datamuse word API (fallback)</span><span class="test-status test-wait" id="t3">Waiting…</span></div>
+        <div class="test-row"><span class="test-label">🌙 MyMemory Translation</span><span class="test-status test-wait" id="t4">Waiting…</span></div>
+        <div id="test-recommendation" style="margin-top:0.75rem;font-size:0.85rem;padding:0.75rem;border-radius:8px;"></div>
     </div>
 
     <div class="api-status" id="api-status"></div>
-
     <div class="step-indicator">
         <div class="step active" id="step1">1</div><div class="step-line" id="line1"></div>
         <div class="step" id="step2">2</div><div class="step-line" id="line2"></div>
@@ -236,7 +232,6 @@
     </div>
     <div id="lookup-error" style="display:none;" class="error-box"></div>
 
-    <!-- Results -->
     <div id="lookup-panel">
         <div class="lookup-header">
             <span class="lookup-word" id="lk-word"></span>
@@ -247,8 +242,9 @@
         <div style="margin-bottom:1rem;">
             <span class="text-muted" style="font-size:0.85rem;">Syllables: </span>
             <strong id="lk-chunks" style="color:var(--primary);letter-spacing:2px;"></strong>
+            <span id="lk-source" class="source-badge" style="display:none;"></span>
         </div>
-        <div class="def-tabs" id="def-tabs"></div>
+        <div class="def-tabs"   id="def-tabs"></div>
         <div id="def-panels"></div>
         <div class="arabic-panel" id="arabic-panel" style="display:none;">
             <h4>🌙 Arabic Translation</h4>
@@ -410,7 +406,7 @@
     </div>
 </div>
 
-</div><!-- /container -->
+</div>
 
 <!-- EDIT MODAL -->
 <div class="modal-overlay" id="edit-modal">
@@ -441,13 +437,11 @@
 // ══════════════════════════════════════════════
 //  DATA
 // ══════════════════════════════════════════════
-let vocab = [], reviewHistory = [], sessionQueue = [], sessionIdx = 0;
-let sessionStats = {done:0,correct:0,forgot:0};
-let currentWord = null, hintsUsed = [], selectedReviewWeaknesses = [], addWeaknesses = [];
-let currentFilter = 'all', youglishWidget = null, streak = 0, currentAudioUrl = null;
-let workingDictProxy = null;   // remembers which endpoint worked
-let workingTransProxy = null;
-const INTERVALS = [1,3,7,14,21,30,60,90];
+let vocab=[], reviewHistory=[], sessionQueue=[], sessionIdx=0;
+let sessionStats={done:0,correct:0,forgot:0};
+let currentWord=null, hintsUsed=[], selectedReviewWeaknesses=[], addWeaknesses=[];
+let currentFilter='all', youglishWidget=null, streak=0, currentAudioUrl=null;
+const INTERVALS=[1,3,7,14,21,30,60,90];
 
 function save(){localStorage.setItem('vocabCoach_vocab',JSON.stringify(vocab));localStorage.setItem('vocabCoach_history',JSON.stringify(reviewHistory));localStorage.setItem('vocabCoach_streak',streak);}
 function load(){vocab=JSON.parse(localStorage.getItem('vocabCoach_vocab')||'[]');reviewHistory=JSON.parse(localStorage.getItem('vocabCoach_history')||'[]');streak=parseInt(localStorage.getItem('vocabCoach_streak')||'0');}
@@ -455,87 +449,121 @@ function load(){vocab=JSON.parse(localStorage.getItem('vocabCoach_vocab')||'[]')
 // ══════════════════════════════════════════════
 //  FETCH ENGINE
 // ══════════════════════════════════════════════
-const DICT_BASE  = 'https://api.dictionaryapi.dev/api/v2/entries/en/';
-const TRANS_BASE = 'https://api.mymemory.translated.net/get?q=';
-
-// Build URL variants: direct + proxied
-function dictUrls(word) {
-    const target = DICT_BASE + encodeURIComponent(word);
-    return [
-        target,
-        `https://corsproxy.io/?${encodeURIComponent(target)}`,
-        `https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`,
-        `https://thingproxy.freeboard.io/fetch/${target}`,
-    ];
-}
-function transUrls(word) {
-    const target = TRANS_BASE + encodeURIComponent(word) + '&langpair=en|ar';
-    return [
-        target,
-        `https://corsproxy.io/?${encodeURIComponent(target)}`,
-        `https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`,
-    ];
-}
-
-// Single fetch with manual timeout (no AbortSignal.timeout)
-function timedFetch(url, ms) {
+function timedFetch(url, ms, opts={}) {
     return new Promise((resolve, reject) => {
         const ctrl = new AbortController();
-        const id   = setTimeout(() => { ctrl.abort(); reject(new Error('Timeout')); }, ms);
-        fetch(url, { signal: ctrl.signal })
-            .then(r => { clearTimeout(id); resolve(r); })
-            .catch(e => { clearTimeout(id); reject(e); });
+        const id = setTimeout(()=>{ ctrl.abort(); reject(new Error('Timeout')); }, ms);
+        fetch(url, { signal: ctrl.signal, ...opts })
+            .then(r=>{ clearTimeout(id); resolve(r); })
+            .catch(e=>{ clearTimeout(id); reject(e); });
     });
 }
 
-// Try a list of URLs, return first that gives valid JSON
-async function tryUrls(urls, validateFn, timeoutMs) {
-    const errors = [];
+// ══════════════════════════════════════════════
+//  DICTIONARY — 4-source fallback chain
+// ══════════════════════════════════════════════
+// Source 1: dictionaryapi.dev direct
+// Source 2: dictionaryapi.dev via corsproxy.io (different from before)
+// Source 3: dictionaryapi.dev via allorigins (raw)
+// Source 4: Datamuse API (always works, less data)
+
+async function fetchDictionary(word) {
+    const w   = encodeURIComponent(word);
+    const base = `https://api.dictionaryapi.dev/api/v2/entries/en/${w}`;
+
+    const sources = [
+        // Direct
+        { url: base, label: 'direct' },
+        // Proxy via corsproxy.io
+        { url: `https://corsproxy.io/?${encodeURIComponent(base)}`, label: 'corsproxy' },
+        // Proxy via allorigins
+        { url: `https://api.allorigins.win/raw?url=${encodeURIComponent(base)}`, label: 'allorigins' },
+        // Proxy via codetabs
+        { url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(base)}`, label: 'codetabs' },
+    ];
+
+    for (const src of sources) {
+        try {
+            const res = await timedFetch(src.url, 12000);
+            if (!res.ok) continue;
+            const json = await res.json();
+            if (Array.isArray(json) && json.length > 0) {
+                console.log(`✅ Dictionary via ${src.label}`);
+                return { data: json, source: src.label };
+            }
+        } catch(e) { console.warn(`❌ ${src.label}: ${e.message}`); }
+    }
+
+    // ── FALLBACK: Datamuse API (always accessible, different format) ──
+    try {
+        const dmDef  = await timedFetch(`https://api.datamuse.com/words?sp=${w}&md=d&max=1`, 10000);
+        const dmSyn  = await timedFetch(`https://api.datamuse.com/words?rel_syn=${w}&max=8`, 10000);
+        const dmAnt  = await timedFetch(`https://api.datamuse.com/words?rel_ant=${w}&max=6`, 10000);
+        const defArr = await dmDef.json();
+        const synArr = await dmSyn.json();
+        const antArr = await dmAnt.json();
+
+        if (defArr.length && defArr[0].defs?.length) {
+            // Convert Datamuse format → dictionaryapi.dev format
+            const converted = convertDatamuse(word, defArr[0], synArr, antArr);
+            console.log('✅ Dictionary via Datamuse fallback');
+            return { data: converted, source: 'datamuse' };
+        }
+    } catch(e) { console.warn('❌ Datamuse:', e.message); }
+
+    throw new Error('All dictionary sources failed. Please check your internet connection and try again.');
+}
+
+function convertDatamuse(word, entry, synArr, antArr) {
+    // Group defs by POS tag
+    const posMap = {};
+    (entry.defs || []).forEach(d => {
+        const parts = d.split('\t');
+        const pos   = parts[0] || 'unknown';
+        const def   = parts[1] || d;
+        if (!posMap[pos]) posMap[pos] = [];
+        posMap[pos].push({ definition: def, example: '', synonyms: [], antonyms: [] });
+    });
+
+    const meanings = Object.entries(posMap).map(([pos, defs]) => ({
+        partOfSpeech: expandPos(pos),
+        definitions:  defs,
+        synonyms:     synArr.map(s => s.word),
+        antonyms:     antArr.map(a => a.word),
+    }));
+
+    return [{
+        word, phonetics: [],
+        meanings: meanings.length ? meanings : [{
+            partOfSpeech: 'unknown',
+            definitions: [{ definition: `Definition of "${word}"`, example: '', synonyms: [], antonyms: [] }],
+            synonyms: synArr.map(s=>s.word),
+            antonyms: antArr.map(a=>a.word),
+        }]
+    }];
+}
+
+function expandPos(p) {
+    return {n:'noun',v:'verb',adj:'adjective',adv:'adverb',prep:'preposition',conj:'conjunction',interj:'interjection'}[p] || p;
+}
+
+// ══════════════════════════════════════════════
+//  TRANSLATION
+// ══════════════════════════════════════════════
+async function fetchTranslation(word) {
+    const urls = [
+        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|ar`,
+        `https://corsproxy.io/?${encodeURIComponent(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|ar`)}`,
+    ];
     for (const url of urls) {
         try {
-            const res = await timedFetch(url, timeoutMs);
-            if (!res.ok) { errors.push(`${res.status} from ${url}`); continue; }
+            const res  = await timedFetch(url, 12000);
+            if (!res.ok) continue;
             const json = await res.json();
-            if (validateFn(json)) return { json, url };
-            errors.push(`Invalid response from ${url}`);
-        } catch(e) {
-            errors.push(`${e.message} — ${url}`);
-        }
+            if (json?.responseData?.translatedText) return json;
+        } catch(e) { console.warn('Translation attempt failed:', e.message); }
     }
-    throw new Error(errors.join('\n'));
-}
-
-// ── Dictionary ──
-async function fetchDictionary(word) {
-    // If we already know a working proxy, try it first
-    const urls = workingDictProxy
-        ? [workingDictProxy, ...dictUrls(word).filter(u => u !== workingDictProxy)]
-        : dictUrls(word);
-
-    const { json, url } = await tryUrls(
-        urls,
-        j => Array.isArray(j) && j.length > 0,
-        15000   // 15 s per attempt
-    );
-    workingDictProxy = url;   // remember for next time
-    return json;
-}
-
-// ── Translation ──
-async function fetchTranslation(word) {
-    try {
-        const urls = workingTransProxy
-            ? [workingTransProxy, ...transUrls(word).filter(u => u !== workingTransProxy)]
-            : transUrls(word);
-
-        const { json, url } = await tryUrls(
-            urls,
-            j => j?.responseData?.translatedText,
-            15000
-        );
-        workingTransProxy = url;
-        return json;
-    } catch { return null; }
+    return null;
 }
 
 // ══════════════════════════════════════════════
@@ -543,50 +571,48 @@ async function fetchTranslation(word) {
 // ══════════════════════════════════════════════
 async function runConnectionTest() {
     document.getElementById('test-panel').style.display = 'block';
-    const testWord = 'hello';
-    const results  = [];
+    ['t0','t1','t2','t3','t4'].forEach(id => {
+        document.getElementById(id).textContent = 'Testing…';
+        document.getElementById(id).className   = 'test-status test-wait';
+    });
+    document.getElementById('test-recommendation').innerHTML = '';
+
+    const w    = 'hello';
+    const base = `https://api.dictionaryapi.dev/api/v2/entries/en/${w}`;
+    const isDict = j => Array.isArray(j) && j.length > 0;
+    const isTrans = j => !!j?.responseData?.translatedText;
 
     async function testOne(id, url, validate) {
         const el = document.getElementById(id);
-        el.textContent = 'Testing…'; el.className = 'test-status test-wait';
         try {
             const res = await timedFetch(url, 10000);
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const j = await res.json();
-            if (!validate(j)) throw new Error('Bad response');
+            if (!validate(j)) throw new Error('Unexpected response format');
             el.textContent = '✅ OK'; el.className = 'test-status test-ok';
-            results.push({ id, ok: true });
+            return true;
         } catch(e) {
             el.textContent = `❌ ${e.message}`; el.className = 'test-status test-fail';
-            results.push({ id, ok: false });
+            return false;
         }
     }
 
-    const dictDirect = DICT_BASE + testWord;
-    const transDirect = TRANS_BASE + testWord + '&langpair=en|ar';
-    const dictProxy1  = `https://corsproxy.io/?${encodeURIComponent(dictDirect)}`;
-    const dictProxy2  = `https://api.allorigins.win/raw?url=${encodeURIComponent(dictDirect)}`;
+    const r0 = await testOne('t0', base, isDict);
+    const r1 = await testOne('t1', `https://corsproxy.io/?${encodeURIComponent(base)}`, isDict);
+    const r2 = await testOne('t2', `https://api.allorigins.win/raw?url=${encodeURIComponent(base)}`, isDict);
+    const r3 = await testOne('t3', `https://api.datamuse.com/words?sp=${w}&md=d&max=1`, j => Array.isArray(j));
+    const r4 = await testOne('t4', `https://api.mymemory.translated.net/get?q=${w}&langpair=en|ar`, isTrans);
 
-    await testOne('t0', dictDirect, j => Array.isArray(j) && j.length > 0);
-    await testOne('t1', transDirect, j => j?.responseData?.translatedText);
-    await testOne('t2', dictProxy1,  j => Array.isArray(j) && j.length > 0);
-    await testOne('t3', dictProxy2,  j => Array.isArray(j) && j.length > 0);
-
-    const anyOk = results.some(r => r.ok);
-    const rec   = document.getElementById('test-recommendation');
-    if (results[0].ok) {
-        rec.innerHTML = '✅ <strong>Direct API works!</strong> Lookup should work fine now.';
-        rec.style.color = 'var(--success)';
-        workingDictProxy  = dictDirect;
-        workingTransProxy = transDirect;
-    } else if (results[2].ok || results[3].ok) {
-        rec.innerHTML = '⚠️ <strong>Direct API blocked, but proxy works.</strong> Lookup will use proxy automatically.';
-        rec.style.color = 'var(--warning)';
-        if (results[2].ok) workingDictProxy = dictProxy1;
-        else               workingDictProxy = dictProxy2;
+    const rec = document.getElementById('test-recommendation');
+    if (r0 || r1 || r2) {
+        rec.innerHTML = '✅ <strong>Dictionary API is reachable!</strong> Lookup should work. Try searching a word now.';
+        rec.style.cssText = 'background:#F0FDF4;color:#166534;padding:0.75rem;border-radius:8px;';
+    } else if (r3) {
+        rec.innerHTML = '⚠️ <strong>Main dictionary blocked, but Datamuse fallback works.</strong> You will get definitions and synonyms — IPA and audio may be missing.';
+        rec.style.cssText = 'background:#FFFBEB;color:#92400E;padding:0.75rem;border-radius:8px;';
     } else {
-        rec.innerHTML = '❌ <strong>All connections failed.</strong> Check your internet or try a different network/browser.';
-        rec.style.color = 'var(--danger)';
+        rec.innerHTML = '❌ <strong>All dictionary sources failed.</strong><br>Try: disable VPN · switch to mobile data · use Chrome · disable browser extensions.';
+        rec.style.cssText = 'background:#FEF2F2;color:#991B1B;padding:0.75rem;border-radius:8px;';
     }
 }
 
@@ -603,24 +629,24 @@ async function lookupWord() {
     setStep(1);
     setBadges([{label:'📖 Dictionary',state:'loading'},{label:'🌙 Arabic',state:'loading'}]);
 
-    let dictData = null, transData = null;
+    let dictResult = null, transData = null;
 
     try {
-        document.getElementById('loading-msg').textContent = 'Fetching definition… (may take up to 15s)';
-        dictData = await fetchDictionary(word);
+        document.getElementById('loading-msg').textContent = 'Trying dictionary sources… (up to 15s)';
+        dictResult = await fetchDictionary(word);
         setBadgeState(0,'ok');
     } catch(e) {
         setBadgeState(0,'fail');
         document.getElementById('lookup-loading').style.display = 'none';
         document.getElementById('lookup-error').style.display   = 'block';
         document.getElementById('lookup-error').innerHTML =
-            `❌ <strong>Dictionary lookup failed.</strong><br><br>
-             ${e.message.split('\n').map(l=>`• ${l}`).join('<br>')}<br><br>
-             💡 <strong>Try:</strong><br>
+            `❌ <strong>All dictionary sources failed.</strong><br><br>
+             💡 <strong>Try these fixes:</strong><br>
              • Click <strong>🔌 Test Connection</strong> above to diagnose<br>
-             • Check your internet connection<br>
-             • Try a different browser (Chrome recommended)<br>
-             • Disable VPN or ad-blocker temporarily`;
+             • Disable VPN or proxy<br>
+             • Switch to mobile data (hotspot)<br>
+             • Try Chrome or Edge browser<br>
+             • Disable browser extensions / ad-blockers`;
         return;
     }
 
@@ -631,16 +657,22 @@ async function lookupWord() {
     } catch { setBadgeState(1,'fail'); }
 
     document.getElementById('lookup-loading').style.display = 'none';
-    renderResults(word, dictData, transData);
+    renderResults(word, dictResult.data, transData, dictResult.source);
     setStep(2);
 }
 
 // ══════════════════════════════════════════════
 //  RENDER RESULTS
 // ══════════════════════════════════════════════
-function renderResults(word, entries, transData) {
+function renderResults(word, entries, transData, source) {
     const entry = entries[0];
     document.getElementById('lk-word').textContent = entry.word || word;
+
+    // Source badge
+    const srcBadge = document.getElementById('lk-source');
+    if (source && source !== 'direct') {
+        srcBadge.textContent = `via ${source}`; srcBadge.style.display='inline';
+    } else { srcBadge.style.display='none'; }
 
     let ipa='', audio='';
     for (const ph of (entry.phonetics||[])) {
@@ -657,22 +689,22 @@ function renderResults(word, entries, transData) {
     const meanings = entry.meanings || [];
     const tabsEl   = document.getElementById('def-tabs');
     const panelsEl = document.getElementById('def-panels');
-    tabsEl.innerHTML = ''; panelsEl.innerHTML = '';
+    tabsEl.innerHTML=''; panelsEl.innerHTML='';
 
     let firstDef='', firstEx='', firstPos='';
-    let allSyn = new Set(), allAnt = new Set();
+    let allSyn=new Set(), allAnt=new Set();
 
     meanings.forEach((m,i) => {
         const tab = document.createElement('button');
         tab.className = 'def-tab'+(i===0?' active':'');
         tab.textContent = m.partOfSpeech;
-        tab.onclick = () => switchTab(i);
+        tab.onclick = ()=>switchTab(i);
         tabsEl.appendChild(tab);
 
         const panel = document.createElement('div');
         panel.className = 'def-panel'+(i===0?' active':'');
         const defs = (m.definitions||[]).slice(0,5);
-        panel.innerHTML = defs.map((d,di) => `
+        panel.innerHTML = defs.map((d,di)=>`
             <div class="definition-item" onclick="pickDef(this,'${esc(d.definition)}','${esc(d.example||'')}','${esc(m.partOfSpeech)}')">
                 <span class="select-indicator" style="display:none;">✅</span>
                 <div class="def-text"><strong>${di+1}.</strong> ${d.definition}</div>
@@ -680,10 +712,10 @@ function renderResults(word, entries, transData) {
             </div>`).join('');
         panelsEl.appendChild(panel);
 
-        if (i===0 && defs.length) { firstDef=defs[0].definition; firstEx=defs[0].example||''; firstPos=m.partOfSpeech; }
+        if (i===0&&defs.length){firstDef=defs[0].definition;firstEx=defs[0].example||'';firstPos=m.partOfSpeech;}
         (m.synonyms||[]).forEach(s=>allSyn.add(s));
         (m.antonyms||[]).forEach(a=>allAnt.add(a));
-        defs.forEach(d=>{ (d.synonyms||[]).forEach(s=>allSyn.add(s)); (d.antonyms||[]).forEach(a=>allAnt.add(a)); });
+        defs.forEach(d=>{(d.synonyms||[]).forEach(s=>allSyn.add(s));(d.antonyms||[]).forEach(a=>allAnt.add(a));});
     });
 
     document.getElementById('final-meaning').value = firstDef;
@@ -700,52 +732,23 @@ function renderResults(word, entries, transData) {
         ? ants.map(a=>`<span class="ant-chip">${a}</span>`).join('')
         : '<span class="text-muted">—</span>';
 
-    const collocs = extractCollocs(word, entries);
+    const collocs=extractCollocs(word,entries);
     document.getElementById('lk-collocations').innerHTML = collocs.length
         ? collocs.map(c=>`<span class="colloc-chip" style="cursor:pointer;" onclick="addColloc('${esc(c)}')">${c}</span>`).join('')
         : '<span class="text-muted">—</span>';
     document.getElementById('final-collocations').value = collocs.slice(0,4).join(', ');
 
     renderArabic(transData);
-    document.getElementById('lookup-panel').style.display = 'block';
+    document.getElementById('lookup-panel').style.display='block';
 }
 
 function switchTab(i){document.querySelectorAll('.def-tab').forEach((t,j)=>t.classList.toggle('active',i===j));document.querySelectorAll('.def-panel').forEach((p,j)=>p.classList.toggle('active',i===j));}
-
-function pickDef(el,def,ex,pos){
-    document.querySelectorAll('.definition-item').forEach(d=>{d.classList.remove('selected');d.querySelector('.select-indicator').style.display='none';});
-    el.classList.add('selected'); el.querySelector('.select-indicator').style.display='inline';
-    document.getElementById('final-meaning').value=def; document.getElementById('lk-pos').textContent=pos;
-    const word=document.getElementById('inp-word').value.trim();
-    if(ex) document.getElementById('final-sentence').value=ex.replace(new RegExp(`\\b${word}\\b`,'gi'),'___');
-    toast('✅ Definition selected!');
-}
-
-function renderArabic(data){
-    const panel=document.getElementById('arabic-panel');
-    if(!data?.responseData?.translatedText){panel.style.display='none';document.getElementById('final-arabic').placeholder='Translation unavailable — type manually';return;}
-    const main=data.responseData.translatedText;
-    document.getElementById('ar-word').textContent=main; document.getElementById('final-arabic').value=main;
-    const extras=(data.matches||[]).map(m=>m.translation).filter((v,i,a)=>v&&v!==main&&a.indexOf(v)===i).slice(0,6);
-    document.getElementById('ar-meanings').innerHTML=[main,...extras].slice(0,8).map(t=>`<span class="arabic-chip" onclick="document.getElementById('final-arabic').value='${esc(t)}';toast('✅ Arabic selected!')">${t}</span>`).join('');
-    panel.style.display='block';
-}
-
-function extractCollocs(word,entries){
-    const found=new Set();
-    entries.forEach(e=>(e.meanings||[]).forEach(m=>(m.definitions||[]).forEach(d=>{
-        if(!d.example)return;
-        const ex=d.example.toLowerCase(), wi=ex.indexOf(word.toLowerCase());
-        if(wi>0){const pre=ex.slice(Math.max(0,wi-20),wi).trim().split(/\s+/).slice(-2).join(' ');if(pre.length>1)found.add(`${pre} ${word}`);}
-        if(wi>=0){const post=ex.slice(wi+word.length).trim().split(/\s+/).slice(0,2).join(' ');if(post.length>1)found.add(`${word} ${post}`);}
-    })));
-    return [...found].filter(c=>c.length>word.length+2).slice(0,8);
-}
-
+function pickDef(el,def,ex,pos){document.querySelectorAll('.definition-item').forEach(d=>{d.classList.remove('selected');d.querySelector('.select-indicator').style.display='none';});el.classList.add('selected');el.querySelector('.select-indicator').style.display='inline';document.getElementById('final-meaning').value=def;document.getElementById('lk-pos').textContent=pos;const word=document.getElementById('inp-word').value.trim();if(ex)document.getElementById('final-sentence').value=ex.replace(new RegExp(`\\b${word}\\b`,'gi'),'___');toast('✅ Definition selected!');}
+function renderArabic(data){const panel=document.getElementById('arabic-panel');if(!data?.responseData?.translatedText){panel.style.display='none';document.getElementById('final-arabic').placeholder='Translation unavailable — type manually';return;}const main=data.responseData.translatedText;document.getElementById('ar-word').textContent=main;document.getElementById('final-arabic').value=main;const extras=(data.matches||[]).map(m=>m.translation).filter((v,i,a)=>v&&v!==main&&a.indexOf(v)===i).slice(0,6);document.getElementById('ar-meanings').innerHTML=[main,...extras].slice(0,8).map(t=>`<span class="arabic-chip" onclick="document.getElementById('final-arabic').value='${esc(t)}';toast('✅ Arabic selected!')">${t}</span>`).join('');panel.style.display='block';}
+function extractCollocs(word,entries){const found=new Set();entries.forEach(e=>(e.meanings||[]).forEach(m=>(m.definitions||[]).forEach(d=>{if(!d.example)return;const ex=d.example.toLowerCase(),wi=ex.indexOf(word.toLowerCase());if(wi>0){const pre=ex.slice(Math.max(0,wi-20),wi).trim().split(/\s+/).slice(-2).join(' ');if(pre.length>1)found.add(`${pre} ${word}`);}if(wi>=0){const post=ex.slice(wi+word.length).trim().split(/\s+/).slice(0,2).join(' ');if(post.length>1)found.add(`${word} ${post}`);}}))); return[...found].filter(c=>c.length>word.length+2).slice(0,8);}
 function addColloc(c){const el=document.getElementById('final-collocations');el.value=el.value.trim()?el.value.trim()+', '+c:c;toast('🔗 Collocation added!');}
 function syllabify(word){const v=/[aeiouy]/i;let o=word[0]||'';for(let i=1;i<word.length-1;i++){o+=word[i];if(v.test(word[i])&&!v.test(word[i+1]||'')&&i<word.length-2)o+='·';}o+=word.length>1?word[word.length-1]:'';return o.replace(/·+/g,'·').replace(/^·|·$/g,'')||word;}
 function playAudio(){if(!currentAudioUrl)return;const url=currentAudioUrl.startsWith('//')?'https:'+currentAudioUrl:currentAudioUrl;new Audio(url).play().catch(()=>toast('⚠️ Could not play audio.'));}
-
 function setBadges(items){document.getElementById('api-status').innerHTML=items.map((it,i)=>`<span class="api-badge api-loading" id="api-badge-${i}">${it.label} ⏳</span>`).join('');}
 function setBadgeState(i,state){const el=document.getElementById(`api-badge-${i}`);if(!el)return;const icons={ok:'✅',fail:'❌',loading:'⏳'};el.className=`api-badge api-${state}`;el.textContent=el.textContent.replace(/[✅❌⏳]/g,'')+icons[state];}
 function setStep(n){for(let i=1;i<=3;i++){const s=document.getElementById(`step${i}`);if(i<n){s.className='step done';s.textContent='✓';}else if(i===n){s.className='step active';s.textContent=i;}else{s.className='step';s.textContent=i;}if(i<3)document.getElementById(`line${i}`).className='step-line'+(i<n?' done':'');}}
@@ -755,14 +758,7 @@ function esc(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").repla
 // ══════════════════════════════════════════════
 //  SAVE WORD
 // ══════════════════════════════════════════════
-function saveWord(){
-    const word=document.getElementById('inp-word').value.trim(), meaning=document.getElementById('final-meaning').value.trim();
-    if(!word||!meaning){toast('⚠️ Word and meaning are required!');return;}
-    if(vocab.find(w=>w.word.toLowerCase()===word.toLowerCase()))if(!confirm(`"${word}" already exists. Add anyway?`))return;
-    vocab.push({id:Date.now().toString(),word,meaning,arabic:document.getElementById('final-arabic').value.trim(),ipa:document.getElementById('final-ipa').value.trim(),chunks:document.getElementById('final-chunks').value.trim(),pos:document.getElementById('lk-pos').textContent,sentence:document.getElementById('final-sentence').value.trim(),collocations:document.getElementById('final-collocations').value.trim(),mnemonic:document.getElementById('final-mnemonic').value.trim(),weaknesses:[...addWeaknesses],level:0,nextReview:null,addedDate:new Date().toISOString(),reviewCount:0});
-    save(); toast(`✅ "${word}" saved!`); setStep(3); setTimeout(resetLookup,1500); updateDashboard();
-}
-
+function saveWord(){const word=document.getElementById('inp-word').value.trim(),meaning=document.getElementById('final-meaning').value.trim();if(!word||!meaning){toast('⚠️ Word and meaning are required!');return;}if(vocab.find(w=>w.word.toLowerCase()===word.toLowerCase()))if(!confirm(`"${word}" already exists. Add anyway?`))return;vocab.push({id:Date.now().toString(),word,meaning,arabic:document.getElementById('final-arabic').value.trim(),ipa:document.getElementById('final-ipa').value.trim(),chunks:document.getElementById('final-chunks').value.trim(),pos:document.getElementById('lk-pos').textContent,sentence:document.getElementById('final-sentence').value.trim(),collocations:document.getElementById('final-collocations').value.trim(),mnemonic:document.getElementById('final-mnemonic').value.trim(),weaknesses:[...addWeaknesses],level:0,nextReview:null,addedDate:new Date().toISOString(),reviewCount:0});save();toast(`✅ "${word}" saved!`);setStep(3);setTimeout(resetLookup,1500);updateDashboard();}
 function toggleAddTag(el,v){el.classList.toggle('selected');addWeaknesses.includes(v)?(addWeaknesses=addWeaknesses.filter(x=>x!==v)):addWeaknesses.push(v);}
 function toggleReviewTag(el,v){el.classList.toggle('selected');selectedReviewWeaknesses.includes(v)?(selectedReviewWeaknesses=selectedReviewWeaknesses.filter(x=>x!==v)):selectedReviewWeaknesses.push(v);}
 
