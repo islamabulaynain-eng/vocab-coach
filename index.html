@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🧠 Vocab Recall Coach AI</title>
+    <title>🧠 Vocab Recall Coach Pro</title>
     <script async src="https://youglish.com/public/emb/widget.js" charset="utf-8"></script>
     <style>
         :root {
@@ -11,206 +11,170 @@
             --bg: #F3F4F6; --card: #FFFFFF; --text: #1F2937; --muted: #6B7280;
             --success: #10B981; --warning: #F59E0B; --danger: #EF4444;
             --border: #E5E7EB; --info: #3B82F6; --arabic-bg: #FFF7ED; --arabic-border: #F97316;
-            --ai: #7C3AED; --ai-light: #F5F3FF;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-        nav { background: var(--primary); padding: 0.85rem 1.5rem; color: white; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.2); flex-wrap: wrap; gap: 0.5rem; }
-        nav h1 { font-size: 1.2rem; }
+        nav { background: var(--primary); padding: 0.85rem 1.5rem; color: white; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        nav h1 { font-size: 1.3rem; }
         .nav-links { display: flex; gap: 0.25rem; flex-wrap: wrap; }
-        .nav-links button { background: none; border: none; color: rgba(255,255,255,0.75); padding: 0.45rem 0.75rem; font-size: 0.85rem; cursor: pointer; border-radius: 6px; transition: all 0.2s; }
+        .nav-links button { background: none; border: none; color: rgba(255,255,255,0.75); padding: 0.5rem 0.85rem; font-size: 0.9rem; cursor: pointer; border-radius: 6px; transition: all 0.2s; }
         .nav-links button:hover { background: rgba(255,255,255,0.15); color: white; }
         .nav-links button.active { background: rgba(255,255,255,0.2); color: white; font-weight: 700; }
-        .container { max-width: 880px; margin: 2rem auto; padding: 0 1rem; }
+        .container { max-width: 860px; margin: 2rem auto; padding: 0 1rem; }
         .section { display: none; } .section.active { display: block; }
         .card { background: var(--card); border-radius: 12px; padding: 1.75rem; box-shadow: 0 4px 12px rgba(0,0,0,0.07); margin-bottom: 1.25rem; }
-        h2 { color: var(--primary); margin-bottom: 1.25rem; font-size: 1.3rem; }
+        h2 { color: var(--primary); margin-bottom: 1.25rem; font-size: 1.35rem; }
+        p { line-height: 1.6; }
         .form-group { margin-bottom: 1rem; }
-        label { display: block; margin-bottom: 0.4rem; font-weight: 600; font-size: 0.88rem; color: var(--muted); }
+        label { display: block; margin-bottom: 0.4rem; font-weight: 600; font-size: 0.9rem; color: var(--muted); }
         input, textarea, select { width: 100%; padding: 0.7rem 0.9rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.95rem; transition: border 0.2s; background: white; }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); }
-        textarea { resize: vertical; min-height: 70px; }
-        .form-row  { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        input:focus, textarea:focus { outline: none; border-color: var(--primary); }
+        textarea { resize: vertical; min-height: 75px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-        @media(max-width:560px){ .form-row,.field-row { grid-template-columns: 1fr; } }
-        .btn { padding: 0.6rem 1.2rem; border: none; border-radius: 8px; cursor: pointer; font-size: 0.92rem; font-weight: 600; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.4rem; }
-        .btn-primary  { background: var(--primary); color: white; }
-        .btn-primary:hover  { background: var(--primary-hover); transform: translateY(-1px); }
-        .btn-outline  { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
-        .btn-outline:hover  { background: var(--primary); color: white; }
-        .btn-success  { background: var(--success); color: white; }
-        .btn-warning  { background: var(--warning); color: white; }
-        .btn-danger   { background: var(--danger);  color: white; }
-        .btn-info     { background: var(--info);    color: white; }
-        .btn-ai       { background: var(--ai);      color: white; }
-        .btn-ai:hover { background: #6D28D9; transform: translateY(-1px); }
-        .btn-sm    { padding: 0.38rem 0.75rem; font-size: 0.8rem; }
+        @media(max-width:550px){ .form-row,.field-row { grid-template-columns: 1fr; } }
+        .btn { padding: 0.65rem 1.3rem; border: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: 600; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.4rem; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover { background: var(--primary); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-danger  { background: var(--danger);  color: white; }
+        .btn-info    { background: var(--info);    color: white; }
+        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.82rem; }
         .btn-block { width: 100%; justify-content: center; }
-
-        /* AI Key Banner */
-        .ai-key-banner { background: var(--ai-light); border: 2px solid var(--ai); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
-        .ai-key-banner h3 { color: var(--ai); margin-bottom: 0.75rem; font-size: 1rem; }
-        .ai-key-row { display: flex; gap: 0.5rem; align-items: center; }
-        .ai-key-row input { flex: 1; font-family: monospace; font-size: 0.88rem; }
-        .ai-status { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; font-weight: 600; padding: 0.25rem 0.65rem; border-radius: 99px; }
-        .ai-status.ok   { background: #D1FAE5; color: #065F46; }
-        .ai-status.fail { background: #FEE2E2; color: #991B1B; }
-        .ai-status.idle { background: #EDE9FE; color: #5B21B6; }
-
-        /* Word search */
         .word-search-wrap { display: flex; gap: 0.75rem; align-items: center; background: var(--primary-light); padding: 1.25rem; border-radius: 10px; margin-bottom: 1rem; }
-        .word-search-wrap input { font-size: 1.1rem; font-weight: 600; flex: 1; border: 2px solid var(--primary); }
-
-        /* AI result panels */
-        .ai-result-box { background: var(--ai-light); border: 1.5px solid #C4B5FD; border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; position: relative; }
-        .ai-result-box h4 { color: var(--ai); font-size: 0.88rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem; }
-        .ai-tag { background: var(--ai); color: white; font-size: 0.7rem; padding: 0.1rem 0.45rem; border-radius: 99px; font-weight: 700; }
-
+        .word-search-wrap input { font-size: 1.1rem; font-weight: 600; flex: 1; border: 2px solid var(--primary); border-radius: 8px; }
+        #lookup-panel { display: none; }
         .lookup-header { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
         .lookup-word { font-size: 2rem; font-weight: 800; color: var(--primary); }
         .lookup-ipa  { font-size: 1rem; color: var(--muted); }
         .lookup-pos  { background: var(--primary-light); color: var(--primary); padding: 0.2rem 0.6rem; border-radius: 99px; font-size: 0.82rem; font-weight: 700; }
-        .audio-btn   { background: var(--primary); color: white; border: none; border-radius: 50%; width: 34px; height: 34px; cursor: pointer; font-size: 0.95rem; display: inline-flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .audio-btn { background: var(--primary); color: white; border: none; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; font-size: 1rem; display: inline-flex; align-items: center; justify-content: center; transition: 0.2s; }
         .audio-btn:hover { background: var(--primary-hover); transform: scale(1.1); }
-
-        .def-tabs  { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
-        .def-tab   { padding: 0.38rem 0.85rem; border-radius: 99px; border: 1.5px solid var(--border); background: white; cursor: pointer; font-size: 0.83rem; font-weight: 600; transition: 0.2s; }
+        .def-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .def-tab { padding: 0.4rem 0.9rem; border-radius: 99px; border: 1.5px solid var(--border); background: white; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.2s; }
         .def-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
         .def-panel { display: none; } .def-panel.active { display: block; }
-        .definition-item { background: #f9fafb; border-left: 3px solid var(--primary); padding: 0.7rem 1rem; border-radius: 0 8px 8px 0; margin-bottom: 0.65rem; cursor: pointer; transition: 0.2s; }
+        .definition-item { background: #f9fafb; border-left: 3px solid var(--primary); padding: 0.75rem 1rem; border-radius: 0 8px 8px 0; margin-bottom: 0.75rem; cursor: pointer; transition: 0.2s; }
         .definition-item:hover { background: var(--primary-light); }
         .definition-item.selected { background: var(--primary-light); border-left-color: var(--success); }
-        .definition-item .def-text    { font-size: 0.93rem; margin-bottom: 0.35rem; }
-        .definition-item .def-example { font-size: 0.83rem; color: var(--muted); font-style: italic; }
-        .select-indicator { float: right; color: var(--success); }
-
-        .arabic-panel  { background: var(--arabic-bg); border: 1.5px solid var(--arabic-border); border-radius: 10px; padding: 1.1rem; margin-bottom: 1rem; }
-        .arabic-panel h4 { color: var(--arabic-border); margin-bottom: 0.65rem; font-size: 0.88rem; }
-        .arabic-word   { font-size: 1.5rem; font-weight: 700; direction: rtl; text-align: right; color: #92400E; margin-bottom: 0.4rem; }
+        .definition-item .def-text { font-size: 0.95rem; margin-bottom: 0.4rem; }
+        .definition-item .def-example { font-size: 0.85rem; color: var(--muted); font-style: italic; }
+        .select-indicator { float: right; color: var(--success); font-size: 1.1rem; }
+        .arabic-panel { background: var(--arabic-bg); border: 1.5px solid var(--arabic-border); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; }
+        .arabic-panel h4 { color: var(--arabic-border); margin-bottom: 0.75rem; font-size: 0.9rem; }
+        .arabic-word { font-size: 1.6rem; font-weight: 700; direction: rtl; text-align: right; color: #92400E; margin-bottom: 0.5rem; }
         .arabic-meanings { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-        .arabic-chip   { background: white; border: 1px solid var(--arabic-border); color: #92400E; padding: 0.22rem 0.6rem; border-radius: 99px; font-size: 0.83rem; cursor: pointer; direction: rtl; transition: 0.2s; }
+        .arabic-chip { background: white; border: 1px solid var(--arabic-border); color: #92400E; padding: 0.25rem 0.65rem; border-radius: 99px; font-size: 0.85rem; cursor: pointer; transition: 0.2s; direction: rtl; }
         .arabic-chip:hover { background: var(--arabic-border); color: white; }
-
-        .word-chips  { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.4rem; }
-        .syn-chip    { background: #D1FAE5; color: #065F46; padding: 0.18rem 0.55rem; border-radius: 99px; font-size: 0.8rem; cursor: pointer; }
-        .ant-chip    { background: #FEE2E2; color: #991B1B; padding: 0.18rem 0.55rem; border-radius: 99px; font-size: 0.8rem; }
-        .colloc-chip { background: #EDE9FE; color: #5B21B6; padding: 0.18rem 0.55rem; border-radius: 99px; font-size: 0.8rem; cursor: pointer; }
-
+        .word-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+        .syn-chip    { background: #D1FAE5; color: #065F46; padding: 0.2rem 0.6rem; border-radius: 99px; font-size: 0.82rem; cursor: pointer; }
+        .ant-chip    { background: #FEE2E2; color: #991B1B; padding: 0.2rem 0.6rem; border-radius: 99px; font-size: 0.82rem; }
+        .colloc-chip { background: #EDE9FE; color: #5B21B6; padding: 0.2rem 0.6rem; border-radius: 99px; font-size: 0.82rem; }
         .loading-wrap { text-align: center; padding: 2rem; }
-        .spinner { width: 38px; height: 38px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
-        .spinner.ai-spin { border-top-color: var(--ai); }
+        .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .error-box   { background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; line-height: 1.8; }
+        .success-box { background: #F0FDF4; border: 1px solid #BBF7D0; color: #166534; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
+        .info-box    { background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; line-height: 1.7; }
+        .api-status { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem; min-height: 1.8rem; }
+        .api-badge { padding: 0.25rem 0.65rem; border-radius: 99px; font-size: 0.78rem; font-weight: 600; }
+        .api-ok      { background: #D1FAE5; color: #065F46; }
+        .api-fail    { background: #FEE2E2; color: #991B1B; }
+        .api-loading { background: #FEF3C7; color: #92400E; }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-        .stat-box   { background: var(--primary-light); padding: 1.1rem; border-radius: 10px; text-align: center; border-left: 4px solid var(--primary); }
-        .stat-box h3 { font-size: 1.9rem; color: var(--primary); margin: 0 0 0.2rem; }
-        .stat-box p  { color: var(--muted); font-size: 0.82rem; margin: 0; }
+        /* ── Settings / Key Panel ── */
+        .key-panel { background: linear-gradient(135deg,#EEF2FF,#F5F3FF); border: 2px solid var(--primary); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+        .key-panel h4 { color: var(--primary); margin-bottom: 0.75rem; font-size: 1rem; }
+        .key-input-row { display: flex; gap: 0.5rem; align-items: center; }
+        .key-input-row input { flex: 1; font-family: monospace; font-size: 0.9rem; letter-spacing: 1px; }
+        .key-status { font-size: 0.82rem; margin-top: 0.5rem; }
+        .key-ok   { color: var(--success); }
+        .key-none { color: var(--muted); }
+        .key-bad  { color: var(--danger); }
+        .gemini-badge { display: inline-flex; align-items: center; gap: 0.3rem; background: linear-gradient(90deg,#4F46E5,#7C3AED); color: white; padding: 0.2rem 0.65rem; border-radius: 99px; font-size: 0.78rem; font-weight: 700; }
 
-        .meaning-display { font-size: 1.05rem; background: var(--primary-light); padding: 1.1rem; border-radius: 10px; margin-bottom: 1.1rem; border-left: 4px solid var(--primary); line-height: 1.6; }
-        .arabic-meaning-display { background: var(--arabic-bg); border-left: 4px solid var(--arabic-border); padding: 0.7rem 1rem; border-radius: 0 8px 8px 0; margin-bottom: 1rem; direction: rtl; text-align: right; font-size: 1rem; color: #92400E; }
-        .context-sentence { font-style: italic; color: var(--muted); background: #f9fafb; padding: 0.9rem; border-left: 4px solid var(--warning); border-radius: 0 8px 8px 0; margin: 1rem 0; line-height: 1.6; }
-        .hint-display { font-size: 1.5rem; font-weight: bold; color: var(--warning); letter-spacing: 4px; margin: 1rem 0; min-height: 2rem; font-family: 'Courier New', monospace; text-align: center; }
-        .hints-area   { display: flex; gap: 0.4rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem; }
-        .answer-area  { display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); text-align: center; }
-        .word-reveal  { font-size: 2.6rem; color: var(--primary); font-weight: 800; margin-bottom: 0.4rem; }
-        .rating-buttons { display: flex; justify-content: center; gap: 0.65rem; margin-top: 1.4rem; flex-wrap: wrap; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-box { background: var(--primary-light); padding: 1.25rem; border-radius: 10px; text-align: center; border-left: 4px solid var(--primary); }
+        .stat-box h3 { font-size: 2rem; color: var(--primary); margin: 0 0 0.25rem; }
+        .stat-box p  { color: var(--muted); font-size: 0.85rem; margin: 0; }
+        .meaning-display { font-size: 1.1rem; background: var(--primary-light); padding: 1.25rem; border-radius: 10px; margin-bottom: 1.25rem; border-left: 4px solid var(--primary); }
+        .arabic-meaning-display { background: var(--arabic-bg); border-left: 4px solid var(--arabic-border); padding: 0.75rem 1rem; border-radius: 0 8px 8px 0; margin-bottom: 1rem; direction: rtl; text-align: right; font-size: 1rem; color: #92400E; }
+        .context-sentence { font-style: italic; color: var(--muted); background: #f9fafb; padding: 1rem; border-left: 4px solid var(--warning); border-radius: 0 8px 8px 0; margin: 1rem 0; }
+        .hint-display { font-size: 1.6rem; font-weight: bold; color: var(--warning); letter-spacing: 4px; margin: 1rem 0; min-height: 2rem; font-family: 'Courier New', monospace; text-align: center; }
+        .hints-area { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem; }
+        .answer-area { display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); text-align: center; }
+        .word-reveal { font-size: 2.8rem; color: var(--primary); font-weight: 800; margin-bottom: 0.5rem; }
+        .rating-buttons { display: flex; justify-content: center; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
         .recall-input-wrap { margin: 1rem 0; }
-        .recall-input-wrap input { font-size: 1.05rem; text-align: center; letter-spacing: 2px; }
-        .check-result { font-size: 0.95rem; margin-top: 0.5rem; font-weight: 600; min-height: 1.4rem; text-align: center; }
+        .recall-input-wrap input { font-size: 1.1rem; text-align: center; letter-spacing: 2px; }
+        .check-result { font-size: 1rem; margin-top: 0.5rem; font-weight: 600; min-height: 1.4rem; text-align: center; }
         .check-result.correct { color: var(--success); } .check-result.wrong { color: var(--danger); }
-
-        /* AI Chat in practice */
-        .ai-chat-wrap { background: var(--ai-light); border: 1.5px solid #C4B5FD; border-radius: 10px; padding: 1rem; margin-top: 1rem; text-align: left; }
-        .ai-chat-wrap h4 { color: var(--ai); font-size: 0.88rem; margin-bottom: 0.75rem; }
-        .chat-messages { max-height: 220px; overflow-y: auto; margin-bottom: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; }
-        .chat-msg { padding: 0.6rem 0.85rem; border-radius: 10px; font-size: 0.88rem; line-height: 1.55; max-width: 90%; }
-        .chat-msg.user { background: var(--primary); color: white; align-self: flex-end; border-radius: 10px 10px 2px 10px; }
-        .chat-msg.ai   { background: white; border: 1px solid #C4B5FD; color: var(--text); align-self: flex-start; border-radius: 10px 10px 10px 2px; }
-        .chat-msg.ai.loading { color: var(--muted); font-style: italic; }
-        .chat-input-row { display: flex; gap: 0.5rem; }
-        .chat-input-row input { flex: 1; font-size: 0.88rem; padding: 0.55rem 0.8rem; }
-
-        /* Sentence checker */
-        .sentence-check-wrap { background: #F0FDF4; border: 1.5px solid #86EFAC; border-radius: 10px; padding: 1rem; margin-top: 1rem; text-align: left; }
-        .sentence-check-wrap h4 { color: #166534; font-size: 0.88rem; margin-bottom: 0.65rem; }
-        .sentence-feedback { font-size: 0.9rem; line-height: 1.6; margin-top: 0.65rem; padding: 0.75rem; background: white; border-radius: 8px; border: 1px solid #BBF7D0; }
-
-        .weakness-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.65rem; }
-        .tag { padding: 0.22rem 0.6rem; border-radius: 99px; font-size: 0.76rem; font-weight: 600; cursor: pointer; border: 2px solid transparent; }
+        .weakness-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
+        .tag { padding: 0.25rem 0.65rem; border-radius: 99px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: 2px solid transparent; }
         .tag-meaning    { background: #FEF3C7; color: #92400E; }
         .tag-sound      { background: #DBEAFE; color: #1E40AF; }
         .tag-spelling   { background: #D1FAE5; color: #065F46; }
         .tag-speed      { background: #FCE7F3; color: #9D174D; }
         .tag-collocation{ background: #EDE9FE; color: #5B21B6; }
         .tag.selected   { border-color: currentColor; }
-
-        #youglish-container { margin-top: 1.4rem; display: none; }
-        .weakness-bar-wrap  { margin-bottom: 0.7rem; }
-        .weakness-label { display: flex; justify-content: space-between; font-size: 0.83rem; margin-bottom: 0.28rem; }
-        .bar-track { background: var(--border); border-radius: 99px; height: 9px; }
-        .bar-fill  { height: 9px; border-radius: 99px; background: var(--primary); transition: width 0.5s; }
-
+        #youglish-container { margin-top: 1.5rem; display: none; }
+        #youglish_widget { width: 100%; border-radius: 10px; overflow: hidden; }
+        .weakness-bar-wrap { margin-bottom: 0.75rem; }
+        .weakness-label { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.3rem; }
+        .bar-track { background: var(--border); border-radius: 99px; height: 10px; }
+        .bar-fill  { height: 10px; border-radius: 99px; background: var(--primary); transition: width 0.5s; }
         .search-bar { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
         .search-bar input { flex: 1; }
-        .filter-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
-        .filter-btn { padding: 0.32rem 0.75rem; border-radius: 99px; border: 1.5px solid var(--border); background: white; cursor: pointer; font-size: 0.8rem; }
+        .filter-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+        .filter-btn { padding: 0.35rem 0.8rem; border-radius: 99px; border: 1.5px solid var(--border); background: white; cursor: pointer; font-size: 0.82rem; }
         .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-        table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
-        th { background: #f9fafb; padding: 0.6rem 0.7rem; text-align: left; border-bottom: 2px solid var(--border); font-size: 0.8rem; color: var(--muted); }
-        td { padding: 0.6rem 0.7rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        th { background: #f9fafb; padding: 0.65rem 0.75rem; text-align: left; border-bottom: 2px solid var(--border); font-size: 0.82rem; color: var(--muted); }
+        td { padding: 0.65rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: top; }
         tr:hover td { background: #fafafa; }
-        .level-badge { display: inline-block; padding: 0.13rem 0.48rem; border-radius: 99px; font-size: 0.73rem; font-weight: 700; }
+        .level-badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700; }
         .level-0 { background: #FEE2E2; color: #991B1B; } .level-1 { background: #FEF3C7; color: #92400E; }
         .level-2 { background: #DBEAFE; color: #1E40AF; } .level-3 { background: #D1FAE5; color: #065F46; }
         .level-4 { background: #EDE9FE; color: #5B21B6; }
-
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; align-items: center; justify-content: center; }
         .modal-overlay.open { display: flex; }
-        .modal { background: white; border-radius: 14px; padding: 1.75rem; max-width: 640px; width: 92%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.25); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.1rem; }
-        .modal-close  { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--muted); }
-
-        #toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: #1F2937; color: white; padding: 0.7rem 1.2rem; border-radius: 8px; font-size: 0.88rem; z-index: 999; transform: translateY(100px); opacity: 0; transition: all 0.3s; pointer-events: none; max-width: 320px; }
+        .modal { background: white; border-radius: 14px; padding: 2rem; max-width: 620px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.25); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+        .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--muted); }
+        #toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: #1F2937; color: white; padding: 0.75rem 1.25rem; border-radius: 8px; font-size: 0.9rem; z-index: 999; transform: translateY(100px); opacity: 0; transition: all 0.3s; pointer-events: none; max-width: 320px; }
         #toast.show { transform: translateY(0); opacity: 1; }
-
-        .empty-state { text-align: center; padding: 2.5rem 1rem; color: var(--muted); }
-        .empty-state .icon { font-size: 2.8rem; margin-bottom: 0.75rem; }
-        .progress-session { background: var(--primary-light); border-radius: 10px; padding: 0.9rem; margin-bottom: 1.1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
-        .session-stat span  { display: block; font-size: 1.3rem; font-weight: 800; color: var(--primary); }
-        .session-stat small { color: var(--muted); font-size: 0.76rem; }
-        .divider { height: 1px; background: var(--border); margin: 1.1rem 0; }
+        .empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); }
+        .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
+        .progress-session { background: var(--primary-light); border-radius: 10px; padding: 1rem; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+        .session-stat { text-align: center; }
+        .session-stat span  { display: block; font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+        .session-stat small { color: var(--muted); font-size: 0.78rem; }
+        .divider { height: 1px; background: var(--border); margin: 1.25rem 0; }
         .flex-end { display: flex; justify-content: flex-end; gap: 0.5rem; }
         .mt-1 { margin-top: 0.5rem; } .mt-2 { margin-top: 1rem; }
-        .text-muted { color: var(--muted); font-size: 0.86rem; }
-        .step-indicator { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.4rem; }
-        .step { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; background: var(--border); color: var(--muted); flex-shrink: 0; }
+        .text-muted { color: var(--muted); font-size: 0.88rem; }
+        #session-complete { display: none; }
+        .step-indicator { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; }
+        .step { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; background: var(--border); color: var(--muted); flex-shrink: 0; }
         .step.active { background: var(--primary); color: white; }
         .step.done   { background: var(--success);  color: white; }
         .step-line { flex: 1; height: 2px; background: var(--border); }
         .step-line.done { background: var(--success); }
-
-        /* AI Coach tab */
-        .coach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        @media(max-width:600px){ .coach-grid { grid-template-columns: 1fr; } }
-        .coach-card { background: var(--ai-light); border: 1.5px solid #C4B5FD; border-radius: 10px; padding: 1.1rem; cursor: pointer; transition: 0.2s; }
-        .coach-card:hover { border-color: var(--ai); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(124,58,237,0.15); }
-        .coach-card h3 { color: var(--ai); font-size: 0.95rem; margin-bottom: 0.4rem; }
-        .coach-card p  { color: var(--muted); font-size: 0.82rem; line-height: 1.5; }
-        .coach-result  { background: white; border: 1.5px solid #C4B5FD; border-radius: 10px; padding: 1.1rem; margin-top: 1rem; line-height: 1.7; font-size: 0.92rem; white-space: pre-wrap; }
     </style>
 </head>
 <body>
 
 <nav>
-    <h1>🧠 Vocab Recall Coach <span style="font-size:0.75rem;background:rgba(255,255,255,0.2);padding:0.15rem 0.5rem;border-radius:99px;">AI</span></h1>
+    <h1>🧠 Vocab Recall Coach</h1>
     <div class="nav-links">
         <button class="active" onclick="showTab('dashboard')">📊 Dashboard</button>
         <button onclick="showTab('add')">➕ Add Word</button>
         <button onclick="showTab('practice')">🎯 Practice</button>
         <button onclick="showTab('library')">📚 Library</button>
-        <button onclick="showTab('coach')">🤖 AI Coach</button>
+        <button onclick="showTab('settings')">⚙️ Settings</button>
     </div>
 </nav>
 <div id="toast"></div>
@@ -228,33 +192,82 @@
             <div class="stat-box"><h3 id="stat-streak">0</h3><p>Day Streak 🔥</p></div>
         </div>
         <div style="text-align:center;margin-top:1rem;">
-            <button class="btn btn-primary" onclick="startPractice()" style="font-size:1rem;padding:0.8rem 2rem;">🎯 Start Practice Session</button>
-            <button class="btn btn-ai" onclick="showTab('coach')" style="font-size:1rem;padding:0.8rem 2rem;margin-left:0.5rem;">🤖 AI Coach</button>
+            <button class="btn btn-primary" onclick="startPractice()" style="font-size:1.05rem;padding:0.85rem 2rem;">🎯 Start Practice Session</button>
         </div>
     </div>
     <div class="card"><h2>🎯 Weakness Profile</h2><div id="weakness-profile"><p class="text-muted">Complete some reviews to see your weakness profile.</p></div></div>
     <div class="card"><h2>📅 Recent Activity</h2><div id="recent-activity"><p class="text-muted">No activity yet. Start practicing!</p></div></div>
 </div>
 
+<!-- ══════════ SETTINGS ══════════ -->
+<div id="settings" class="section">
+    <div class="card">
+        <h2>⚙️ Settings</h2>
+
+        <div class="key-panel">
+            <h4>🤖 Gemini AI — Word Lookup Engine</h4>
+            <p class="text-muted" style="margin-bottom:1rem;font-size:0.88rem;">
+                Gemini gives you rich definitions, Arabic translation, IPA, collocations, example sentences and mnemonics — all in one reliable call. It's free for personal use.
+            </p>
+            <div class="info-box" style="margin-bottom:1rem;">
+                <strong>📋 How to get your free key:</strong><br>
+                1. Go to <a href="https://aistudio.google.com" target="_blank" style="color:var(--primary);font-weight:700;">aistudio.google.com</a><br>
+                2. Sign in with your Google account<br>
+                3. Click <strong>"Get API Key"</strong> → <strong>"Create API key"</strong><br>
+                4. Copy the key and paste it below
+            </div>
+            <label style="margin-bottom:0.5rem;display:block;font-weight:700;">Your Gemini API Key</label>
+            <div class="key-input-row">
+                <input type="password" id="gemini-key-input" placeholder="AIzaSy…" autocomplete="off">
+                <button class="btn btn-primary btn-sm" onclick="saveGeminiKey()">💾 Save</button>
+                <button class="btn btn-outline btn-sm" onclick="testGeminiKey()">🔌 Test</button>
+                <button class="btn btn-danger btn-sm" onclick="clearGeminiKey()">🗑️</button>
+            </div>
+            <div class="key-status" id="key-status">
+                <span class="key-none">No key saved yet.</span>
+            </div>
+        </div>
+
+        <div class="card" style="background:#f9fafb;box-shadow:none;border:1px solid var(--border);">
+            <h4 style="margin-bottom:0.75rem;color:var(--primary);">🔒 Privacy & Security</h4>
+            <ul style="padding-left:1.25rem;line-height:2;font-size:0.9rem;color:var(--muted);">
+                <li>Your API key is stored <strong>only in your browser</strong> (localStorage)</li>
+                <li>It is <strong>never sent</strong> to any server except Google's Gemini API</li>
+                <li>No account or login required for this app</li>
+                <li>All your vocabulary data stays on your device</li>
+            </ul>
+        </div>
+
+        <div class="card" style="background:#f9fafb;box-shadow:none;border:1px solid var(--border);margin-top:1rem;">
+            <h4 style="margin-bottom:0.75rem;color:var(--primary);">📦 Data Management</h4>
+            <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+                <button class="btn btn-outline btn-sm" onclick="exportJSON()">💾 Backup All Data</button>
+                <button class="btn btn-outline btn-sm" onclick="exportCSV()">📊 Export CSV</button>
+                <label class="btn btn-outline btn-sm" style="cursor:pointer;">📂 Restore Backup
+                    <input type="file" accept=".json" onchange="importJSON(event)" style="display:none;">
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- ══════════ ADD WORD ══════════ -->
 <div id="add" class="section">
 <div class="card">
-    <h2>➕ AI-Powered Word Lookup</h2>
+    <h2>➕ Smart Word Lookup</h2>
 
-    <!-- API Key Setup -->
-    <div class="ai-key-banner" id="api-key-banner">
-        <h3>🔑 Gemini AI Setup <span id="ai-status-badge" class="ai-status idle">⚡ Not connected</span></h3>
-        <p class="text-muted" style="margin-bottom:0.75rem;font-size:0.85rem;">
-            Get a free key at <a href="https://aistudio.google.com" target="_blank" style="color:var(--ai);">aistudio.google.com</a> → "Get API Key" → "Create API Key"
-        </p>
-        <div class="ai-key-row">
-            <input type="password" id="gemini-key-input" placeholder="Paste your Gemini API key here (AIzaSy…)" autocomplete="off">
-            <button class="btn btn-ai btn-sm" onclick="saveApiKey()">💾 Save</button>
-            <button class="btn btn-outline btn-sm" onclick="testApiKey()">🔌 Test</button>
-        </div>
-        <p class="text-muted" style="margin-top:0.5rem;font-size:0.78rem;">🔒 Key is stored only in your browser (localStorage). Never sent anywhere except Google.</p>
+    <div id="no-key-warning" class="info-box" style="display:none;">
+        ⚠️ <strong>No Gemini API key set.</strong>
+        <a href="#" onclick="showTab('settings')" style="color:var(--primary);font-weight:700;">Go to Settings → add your free key</a>
+        for the best experience. The app will try fallback APIs in the meantime.
     </div>
 
+    <div id="gemini-active-badge" style="display:none;margin-bottom:1rem;">
+        <span class="gemini-badge">✨ Gemini AI Active</span>
+        <span class="text-muted" style="font-size:0.82rem;margin-left:0.5rem;">Powered by Google Gemini</span>
+    </div>
+
+    <div class="api-status" id="api-status"></div>
     <div class="step-indicator">
         <div class="step active" id="step1">1</div><div class="step-line" id="line1"></div>
         <div class="step" id="step2">2</div><div class="step-line" id="line2"></div>
@@ -263,12 +276,12 @@
 
     <div class="word-search-wrap">
         <input type="text" id="inp-word" placeholder="Type any English word…" onkeydown="if(event.key==='Enter') lookupWord()">
-        <button class="btn btn-ai" onclick="lookupWord()" style="white-space:nowrap;">🤖 AI Lookup</button>
+        <button class="btn btn-primary" onclick="lookupWord()" style="white-space:nowrap;">🔍 Lookup</button>
     </div>
 
     <div id="lookup-loading" style="display:none;" class="loading-wrap">
-        <div class="spinner ai-spin"></div>
-        <p class="text-muted" id="loading-msg">AI is analyzing the word…</p>
+        <div class="spinner"></div>
+        <p class="text-muted" id="loading-msg">Fetching with Gemini AI…</p>
     </div>
     <div id="lookup-error" style="display:none;" class="error-box"></div>
 
@@ -280,52 +293,36 @@
             <button class="audio-btn" id="lk-audio-btn" onclick="playAudio()" style="display:none;">🔊</button>
         </div>
         <div style="margin-bottom:1rem;">
-            <span class="text-muted" style="font-size:0.83rem;">Syllables: </span>
+            <span class="text-muted" style="font-size:0.85rem;">Syllables: </span>
             <strong id="lk-chunks" style="color:var(--primary);letter-spacing:2px;"></strong>
         </div>
-
-        <!-- AI enrichment panels -->
-        <div class="ai-result-box" id="ai-definition-box" style="display:none;">
-            <h4>🤖 AI Definition <span class="ai-tag">Gemini</span></h4>
-            <div id="ai-definition-text" style="font-size:0.95rem;line-height:1.65;"></div>
-        </div>
-
         <div class="def-tabs"   id="def-tabs"></div>
         <div id="def-panels"></div>
-
         <div class="arabic-panel" id="arabic-panel" style="display:none;">
-            <h4>🌙 Arabic Translation <span id="arabic-source-tag" style="font-size:0.75rem;color:var(--muted);"></span></h4>
+            <h4>🌙 Arabic Translation</h4>
             <div class="arabic-word" id="ar-word"></div>
-            <div style="font-size:0.83rem;color:var(--muted);margin-bottom:0.4rem;">Click a meaning to use it:</div>
+            <div style="font-size:0.85rem;color:var(--muted);margin-bottom:0.5rem;">Click a meaning to use it:</div>
             <div class="arabic-meanings" id="ar-meanings"></div>
         </div>
-
-        <div class="ai-result-box" id="ai-mnemonic-box" style="display:none;">
-            <h4>💡 AI Memory Hook <span class="ai-tag">Gemini</span></h4>
-            <div id="ai-mnemonic-text" style="font-size:0.93rem;line-height:1.6;"></div>
-            <button class="btn btn-ai btn-sm mt-1" onclick="regenerateMnemonic()">🔄 Regenerate</button>
-        </div>
-
         <div class="form-row" style="margin-bottom:1rem;">
-            <div><div class="text-muted" style="font-size:0.83rem;margin-bottom:0.4rem;">✅ Synonyms (with nuance)</div><div id="lk-synonyms" style="font-size:0.85rem;line-height:1.6;"></div></div>
-            <div><div class="text-muted" style="font-size:0.83rem;margin-bottom:0.4rem;">❌ Antonyms</div><div class="word-chips" id="lk-antonyms"></div></div>
+            <div><div class="text-muted" style="font-size:0.85rem;margin-bottom:0.4rem;">✅ Synonyms</div><div class="word-chips" id="lk-synonyms"></div></div>
+            <div><div class="text-muted" style="font-size:0.85rem;margin-bottom:0.4rem;">❌ Antonyms</div><div class="word-chips" id="lk-antonyms"></div></div>
         </div>
         <div style="margin-bottom:1rem;">
-            <div class="text-muted" style="font-size:0.83rem;margin-bottom:0.4rem;">🔗 Collocations & Usage</div>
+            <div class="text-muted" style="font-size:0.85rem;margin-bottom:0.4rem;">🔗 Collocations</div>
             <div class="word-chips" id="lk-collocations"></div>
         </div>
-
         <div class="divider"></div>
         <h3 style="margin-bottom:1rem;color:var(--primary);">✏️ Review & Customize Before Saving</h3>
-        <div class="form-group"><label>Definition (English) *</label><textarea id="final-meaning" rows="3"></textarea></div>
-        <div class="form-group"><label>Arabic Meaning</label><textarea id="final-arabic" rows="2" style="direction:rtl;text-align:right;font-size:1.05rem;"></textarea></div>
+        <div class="form-group"><label>Selected Definition (English) *</label><textarea id="final-meaning" rows="3"></textarea></div>
+        <div class="form-group"><label>Arabic Meaning</label><textarea id="final-arabic" rows="2" style="direction:rtl;text-align:right;font-size:1.1rem;"></textarea></div>
         <div class="field-row">
             <div class="form-group"><label>IPA Pronunciation</label><input type="text" id="final-ipa"></div>
             <div class="form-group"><label>Syllable Chunks</label><input type="text" id="final-chunks"></div>
         </div>
         <div class="form-group"><label>Example Sentence (use ___ for blank)</label><textarea id="final-sentence" rows="2"></textarea></div>
         <div class="form-group"><label>Collocations (comma-separated)</label><input type="text" id="final-collocations"></div>
-        <div class="form-group"><label>Memory Hook / Mnemonic</label><input type="text" id="final-mnemonic"></div>
+        <div class="form-group"><label>Memory Hook / Mnemonic</label><input type="text" id="final-mnemonic" placeholder="e.g. sounds like… / reminds me of…"></div>
         <div class="form-group">
             <label>Primary Retrieval Weakness</label>
             <div class="weakness-tags" id="add-weakness-tags">
@@ -347,9 +344,9 @@
 <!-- ══════════ PRACTICE ══════════ -->
 <div id="practice" class="section">
     <div id="session-complete" class="card" style="text-align:center;padding:2rem;display:none;">
-        <div style="font-size:3.5rem;margin-bottom:1rem;">🎉</div>
+        <div style="font-size:4rem;margin-bottom:1rem;">🎉</div>
         <h2>Session Complete!</h2>
-        <p class="text-muted" style="margin-bottom:1.25rem;">Great work! Here's your session summary:</p>
+        <p class="text-muted" style="margin-bottom:1.5rem;">Great work! Here's your session summary:</p>
         <div class="stats-grid" id="session-summary-stats"></div>
         <div class="mt-2">
             <button class="btn btn-primary" onclick="startPractice()">🔄 Practice Again</button>
@@ -386,56 +383,32 @@
                     <button class="btn btn-outline btn-sm" onclick="showSentence()">📖 Sentence</button>
                     <button class="btn btn-outline btn-sm" onclick="toggleArabicHint()">🌙 Arabic</button>
                     <button class="btn btn-outline btn-sm" onclick="showHint('letter')">🔤 1st Letter</button>
-                    <button class="btn btn-outline btn-sm" onclick="showHint('syllable')">🔊 Syllable</button>
-                    <button class="btn btn-outline btn-sm" onclick="showHint('chunks')">📦 Chunks</button>
-                    <button class="btn btn-ai btn-sm"     onclick="getAIHint()">🤖 AI Hint</button>
+                    <button class="btn btn-outline btn-sm" onclick="showHint('syllable')">🔊 1st Syllable</button>
+                    <button class="btn btn-outline btn-sm" onclick="showHint('chunks')">📦 All Chunks</button>
                     <button class="btn btn-outline btn-sm" onclick="checkRecall()">✅ Check</button>
                 </div>
-
                 <div class="answer-area" id="answer-area">
                     <div class="word-reveal" id="answer-word"></div>
-                    <div style="font-size:0.95rem;color:var(--muted);margin-bottom:0.2rem;" id="answer-ipa"></div>
-                    <div style="font-size:1.15rem;color:#92400E;direction:rtl;margin-bottom:0.65rem;font-weight:600;" id="answer-arabic"></div>
-                    <div style="font-size:0.88rem;margin-bottom:0.9rem;" id="answer-colloc"></div>
+                    <div style="font-size:1rem;color:var(--muted);margin-bottom:0.25rem;" id="answer-ipa"></div>
+                    <div style="font-size:1.2rem;color:#92400E;direction:rtl;margin-bottom:0.75rem;font-weight:600;" id="answer-arabic"></div>
+                    <div style="font-size:0.9rem;margin-bottom:1rem;" id="answer-colloc"></div>
                     <div class="context-sentence" id="answer-sentence" style="display:none;"></div>
-                    <div class="text-muted" id="answer-mnemonic" style="margin-top:0.4rem;"></div>
-
-                    <!-- Sentence checker -->
-                    <div class="sentence-check-wrap">
-                        <h4>✍️ Use it in a sentence — AI will check it!</h4>
-                        <div style="display:flex;gap:0.5rem;">
-                            <input type="text" id="user-sentence-input" placeholder="Write your own sentence using this word…" style="flex:1;font-size:0.9rem;">
-                            <button class="btn btn-ai btn-sm" onclick="checkUserSentence()">🤖 Check</button>
-                        </div>
-                        <div class="sentence-feedback" id="sentence-feedback" style="display:none;"></div>
-                    </div>
-
-                    <!-- AI Chat -->
-                    <div class="ai-chat-wrap">
-                        <h4>🤖 Ask AI about "<span id="chat-word-label"></span>"</h4>
-                        <div class="chat-messages" id="chat-messages"></div>
-                        <div class="chat-input-row">
-                            <input type="text" id="chat-input" placeholder="Ask anything about this word…" onkeydown="if(event.key==='Enter') sendChat()">
-                            <button class="btn btn-ai btn-sm" onclick="sendChat()">Send</button>
-                        </div>
-                    </div>
-
-                    <div id="youglish-container" style="margin-top:1.25rem;display:none;">
-                        <h3 style="color:var(--primary);margin-bottom:0.65rem;">🎬 Hear it in Real Sentences</h3>
+                    <div class="text-muted" id="answer-mnemonic" style="margin-top:0.5rem;"></div>
+                    <div id="youglish-container">
+                        <h3 style="color:var(--primary);margin-bottom:0.75rem;">🎬 Hear it in Real Sentences</h3>
                         <div id="youglish_widget"></div>
                         <button class="btn btn-outline btn-sm mt-1" onclick="loadYouGlish()">🔄 Reload</button>
                     </div>
-
                     <div class="divider"></div>
-                    <p style="font-weight:600;margin-bottom:0.65rem;">How did you recall this word?</p>
+                    <p style="font-weight:600;margin-bottom:0.75rem;">How did you recall this word?</p>
                     <div class="rating-buttons">
                         <button class="btn btn-danger"  onclick="rateWord(0)">😵 Forgot</button>
                         <button class="btn btn-warning" onclick="rateWord(1)">😓 Hard</button>
                         <button class="btn btn-info"    onclick="rateWord(2)">🙂 Good</button>
                         <button class="btn btn-success" onclick="rateWord(3)">😄 Easy</button>
                     </div>
-                    <div style="margin-top:1.1rem;">
-                        <p class="text-muted" style="font-size:0.83rem;margin-bottom:0.4rem;">What was hard? (optional)</p>
+                    <div style="margin-top:1.25rem;">
+                        <p class="text-muted" style="font-size:0.85rem;margin-bottom:0.5rem;">What was hard? (optional)</p>
                         <div class="weakness-tags" id="review-weakness-tags">
                             <span class="tag tag-meaning"     onclick="toggleReviewTag(this,'meaning')">🧠 Meaning</span>
                             <span class="tag tag-sound"       onclick="toggleReviewTag(this,'sound')">🔊 Sound</span>
@@ -445,7 +418,7 @@
                         </div>
                     </div>
                 </div>
-                <div style="margin-top:1.1rem;" id="show-answer-wrap">
+                <div style="margin-top:1.25rem;" id="show-answer-wrap">
                     <button class="btn btn-primary btn-block" onclick="revealAnswer()">👁️ Reveal Answer</button>
                 </div>
             </div>
@@ -461,7 +434,9 @@
             <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
                 <button class="btn btn-outline btn-sm" onclick="exportJSON()">💾 Backup</button>
                 <button class="btn btn-outline btn-sm" onclick="exportCSV()">📊 CSV</button>
-                <label class="btn btn-outline btn-sm" style="cursor:pointer;">📂 Restore<input type="file" accept=".json" onchange="importJSON(event)" style="display:none;"></label>
+                <label class="btn btn-outline btn-sm" style="cursor:pointer;">📂 Restore
+                    <input type="file" accept=".json" onchange="importJSON(event)" style="display:none;">
+                </label>
             </div>
         </div>
         <div class="search-bar"><input type="text" id="search-input" placeholder="🔍 Search words, meanings, Arabic…" oninput="renderLibrary()"></div>
@@ -483,60 +458,7 @@
     </div>
 </div>
 
-<!-- ══════════ AI COACH ══════════ -->
-<div id="coach" class="section">
-    <div class="card">
-        <h2>🤖 AI Learning Coach</h2>
-        <p class="text-muted" style="margin-bottom:1.25rem;">Your personal AI tutor — powered by Gemini. Analyzes your vocabulary and gives personalized guidance.</p>
-
-        <div class="coach-grid">
-            <div class="coach-card" onclick="runCoach('analyze')">
-                <h3>📊 Analyze My Vocabulary</h3>
-                <p>AI reviews all your words and gives a full learning report with personalized tips.</p>
-            </div>
-            <div class="coach-card" onclick="runCoach('weak')">
-                <h3>🎯 Focus on Weak Words</h3>
-                <p>AI identifies your most problematic words and explains why you're struggling with them.</p>
-            </div>
-            <div class="coach-card" onclick="runCoach('story')">
-                <h3>📖 Generate a Story</h3>
-                <p>AI writes a short story using your due words to help you see them in rich context.</p>
-            </div>
-            <div class="coach-card" onclick="runCoach('quiz')">
-                <h3>🧩 Custom Quiz</h3>
-                <p>AI creates a fill-in-the-blank quiz using your own vocabulary list.</p>
-            </div>
-            <div class="coach-card" onclick="runCoach('tips')">
-                <h3>💡 Learning Tips</h3>
-                <p>AI gives personalized memory strategies based on your weakness profile.</p>
-            </div>
-            <div class="coach-card" onclick="runCoach('sentences')">
-                <h3>✍️ Example Sentences</h3>
-                <p>AI generates 3 natural example sentences for each of your due words.</p>
-            </div>
-        </div>
-
-        <!-- Free chat with coach -->
-        <div style="margin-top:1.5rem;">
-            <h3 style="color:var(--ai);margin-bottom:0.75rem;">💬 Chat with Your Coach</h3>
-            <div class="ai-chat-wrap" style="margin-top:0;">
-                <div class="chat-messages" id="coach-chat-messages" style="max-height:300px;"></div>
-                <div class="chat-input-row">
-                    <input type="text" id="coach-chat-input" placeholder="Ask your AI coach anything about English learning…" onkeydown="if(event.key==='Enter') sendCoachChat()">
-                    <button class="btn btn-ai btn-sm" onclick="sendCoachChat()">Send</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="coach-loading" style="display:none;" class="loading-wrap">
-            <div class="spinner ai-spin"></div>
-            <p class="text-muted">AI Coach is thinking…</p>
-        </div>
-        <div class="coach-result" id="coach-result" style="display:none;"></div>
-    </div>
 </div>
-
-</div><!-- /container -->
 
 <!-- EDIT MODAL -->
 <div class="modal-overlay" id="edit-modal">
@@ -565,74 +487,89 @@
 
 <script>
 // ══════════════════════════════════════════════
-//  DATA
+//  DATA & STORAGE
 // ══════════════════════════════════════════════
 let vocab=[], reviewHistory=[], sessionQueue=[], sessionIdx=0;
 let sessionStats={done:0,correct:0,forgot:0};
 let currentWord=null, hintsUsed=[], selectedReviewWeaknesses=[], addWeaknesses=[];
 let currentFilter='all', youglishWidget=null, streak=0, currentAudioUrl=null;
-let geminiKey='', currentLookupWord='';
 const INTERVALS=[1,3,7,14,21,30,60,90];
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
 function save(){localStorage.setItem('vocabCoach_vocab',JSON.stringify(vocab));localStorage.setItem('vocabCoach_history',JSON.stringify(reviewHistory));localStorage.setItem('vocabCoach_streak',streak);}
-function load(){
-    vocab         = JSON.parse(localStorage.getItem('vocabCoach_vocab')   || '[]');
-    reviewHistory = JSON.parse(localStorage.getItem('vocabCoach_history') || '[]');
-    streak        = parseInt(localStorage.getItem('vocabCoach_streak')    || '0');
-    geminiKey     = localStorage.getItem('vocabCoach_geminiKey')          || '';
-    if (geminiKey) {
-        document.getElementById('gemini-key-input').value = geminiKey;
-        updateKeyStatus('ok');
+function load(){vocab=JSON.parse(localStorage.getItem('vocabCoach_vocab')||'[]');reviewHistory=JSON.parse(localStorage.getItem('vocabCoach_history')||'[]');streak=parseInt(localStorage.getItem('vocabCoach_streak')||'0');}
+
+// ══════════════════════════════════════════════
+//  GEMINI KEY MANAGEMENT
+// ══════════════════════════════════════════════
+function getKey(){ return localStorage.getItem('vocabCoach_geminiKey') || ''; }
+
+function saveGeminiKey(){
+    const k = document.getElementById('gemini-key-input').value.trim();
+    if (!k) { toast('⚠️ Please paste your API key first.'); return; }
+    if (!k.startsWith('AIza')) { toast('⚠️ Key should start with "AIza…"'); return; }
+    localStorage.setItem('vocabCoach_geminiKey', k);
+    updateKeyStatus();
+    toast('✅ Gemini key saved!');
+}
+
+function clearGeminiKey(){
+    if (!confirm('Remove your Gemini API key?')) return;
+    localStorage.removeItem('vocabCoach_geminiKey');
+    document.getElementById('gemini-key-input').value = '';
+    updateKeyStatus();
+    toast('🗑️ Key removed.');
+}
+
+async function testGeminiKey(){
+    const k = document.getElementById('gemini-key-input').value.trim() || getKey();
+    if (!k) { toast('⚠️ No key to test. Paste your key first.'); return; }
+    const el = document.getElementById('key-status');
+    el.innerHTML = '<span class="key-none">⏳ Testing key…</span>';
+    try {
+        const result = await callGemini('Say "OK" only.', k);
+        if (result) {
+            el.innerHTML = '<span class="key-ok">✅ Key works! Gemini is ready.</span>';
+            toast('✅ Gemini key is valid!');
+        } else { throw new Error('Empty response'); }
+    } catch(e) {
+        el.innerHTML = `<span class="key-bad">❌ Key failed: ${e.message}</span>`;
+        toast('❌ Key test failed.');
     }
 }
 
-// ══════════════════════════════════════════════
-//  GEMINI AI
-// ══════════════════════════════════════════════
-function saveApiKey() {
-    const key = document.getElementById('gemini-key-input').value.trim();
-    if (!key) { toast('⚠️ Please paste your API key first.'); return; }
-    geminiKey = key;
-    localStorage.setItem('vocabCoach_geminiKey', key);
-    toast('✅ API key saved!');
-    updateKeyStatus('ok');
+function updateKeyStatus(){
+    const k  = getKey();
+    const el = document.getElementById('key-status');
+    if (!el) return;
+    if (k) {
+        const masked = k.slice(0,8) + '••••••••' + k.slice(-4);
+        el.innerHTML = `<span class="key-ok">✅ Key saved: <code>${masked}</code></span>`;
+        document.getElementById('gemini-key-input').value = k;
+    } else {
+        el.innerHTML = '<span class="key-none">No key saved yet.</span>';
+    }
+    // Show/hide badge and warning on Add tab
+    const hasBadge = document.getElementById('gemini-active-badge');
+    const hasWarn  = document.getElementById('no-key-warning');
+    if (hasBadge) hasBadge.style.display = k ? 'block' : 'none';
+    if (hasWarn)  hasWarn.style.display  = k ? 'none'  : 'block';
 }
 
-async function testApiKey() {
-    const key = document.getElementById('gemini-key-input').value.trim();
-    if (!key) { toast('⚠️ Enter your API key first.'); return; }
-    updateKeyStatus('testing');
-    try {
-        const res = await geminiAsk('Say "OK" in one word.', key);
-        if (res) { geminiKey = key; localStorage.setItem('vocabCoach_geminiKey', key); updateKeyStatus('ok'); toast('✅ Gemini AI connected successfully!'); }
-        else throw new Error('No response');
-    } catch(e) { updateKeyStatus('fail'); toast('❌ API key test failed: ' + e.message); }
-}
-
-function updateKeyStatus(state) {
-    const el = document.getElementById('ai-status-badge');
-    const states = {
-        ok:      { cls:'ok',   text:'✅ Connected' },
-        fail:    { cls:'fail', text:'❌ Failed' },
-        idle:    { cls:'idle', text:'⚡ Not connected' },
-        testing: { cls:'idle', text:'⏳ Testing…' },
+// ══════════════════════════════════════════════
+//  GEMINI API CALL
+// ══════════════════════════════════════════════
+async function callGemini(prompt, key) {
+    const k = key || getKey();
+    if (!k) throw new Error('No API key');
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${k}`;
+    const body = {
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.3, maxOutputTokens: 1024 }
     };
-    const s = states[state] || states.idle;
-    el.className = `ai-status ${s.cls}`;
-    el.textContent = s.text;
-}
-
-async function geminiAsk(prompt, key) {
-    const k = key || geminiKey;
-    if (!k) throw new Error('No API key set. Please add your Gemini API key in the Add Word tab.');
-    const res = await fetch(`${GEMINI_URL}?key=${k}`, {
+    const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.7, maxOutputTokens: 1024 }
-        })
+        body: JSON.stringify(body)
     });
     if (!res.ok) {
         const err = await res.json().catch(()=>({}));
@@ -643,359 +580,266 @@ async function geminiAsk(prompt, key) {
 }
 
 // ══════════════════════════════════════════════
-//  WORD LOOKUP — AI-powered
+//  GEMINI WORD LOOKUP
+// ══════════════════════════════════════════════
+async function lookupWithGemini(word) {
+    const prompt = `
+You are a vocabulary assistant for an English learner whose native language is Arabic.
+Look up the word: "${word}"
+
+Reply with ONLY a valid JSON object — no markdown, no code fences, no explanation.
+
+{
+  "word": "${word}",
+  "ipa": "/IPA transcription/",
+  "syllables": "syl·la·bles",
+  "meanings": [
+    {
+      "partOfSpeech": "noun",
+      "definition": "Clear English definition suitable for a learner",
+      "example": "A natural example sentence using the word"
+    }
+  ],
+  "arabic": "الترجمة العربية الأكثر شيوعاً",
+  "arabicAlternatives": ["بديل١", "بديل٢"],
+  "synonyms": ["syn1", "syn2", "syn3"],
+  "antonyms": ["ant1", "ant2"],
+  "collocations": ["collocation 1", "collocation 2", "collocation 3", "collocation 4"],
+  "mnemonic": "A creative memory trick to remember this word"
+}
+
+Rules:
+- Include 1–4 meanings covering different parts of speech if applicable
+- Arabic should be natural Modern Standard Arabic
+- Collocations should be the most common real-world combinations
+- Mnemonic should relate to sound, image, or story
+- Example sentence should have a blank "___" where the word goes
+`.trim();
+
+    const raw  = await callGemini(prompt);
+    // Strip any accidental markdown fences
+    const json = raw.replace(/```json|```/g,'').trim();
+    return JSON.parse(json);
+}
+
+// ══════════════════════════════════════════════
+//  FALLBACK: Datamuse + MyMemory
+// ══════════════════════════════════════════════
+function timedFetch(url, ms) {
+    return new Promise((resolve, reject) => {
+        const ctrl = new AbortController();
+        const id = setTimeout(()=>{ ctrl.abort(); reject(new Error('Timeout')); }, ms);
+        fetch(url, { signal: ctrl.signal })
+            .then(r=>{ clearTimeout(id); resolve(r); })
+            .catch(e=>{ clearTimeout(id); reject(e); });
+    });
+}
+
+async function lookupWithFallback(word) {
+    const w = encodeURIComponent(word);
+    let defs=[], syns=[], ants=[], arabic='';
+
+    // Datamuse definitions
+    try {
+        const r = await timedFetch(`https://api.datamuse.com/words?sp=${w}&md=d&max=1`, 10000);
+        const j = await r.json();
+        if (j[0]?.defs) defs = j[0].defs;
+    } catch(e) {}
+
+    // Datamuse synonyms
+    try {
+        const r = await timedFetch(`https://api.datamuse.com/words?rel_syn=${w}&max=8`, 8000);
+        const j = await r.json(); syns = j.map(x=>x.word);
+    } catch(e) {}
+
+    // Datamuse antonyms
+    try {
+        const r = await timedFetch(`https://api.datamuse.com/words?rel_ant=${w}&max=6`, 8000);
+        const j = await r.json(); ants = j.map(x=>x.word);
+    } catch(e) {}
+
+    // MyMemory translation
+    try {
+        const r = await timedFetch(`https://api.mymemory.translated.net/get?q=${w}&langpair=en|ar`, 10000);
+        const j = await r.json();
+        arabic = j?.responseData?.translatedText || '';
+    } catch(e) {}
+
+    if (!defs.length) throw new Error('No definitions found. Check spelling or try a different word.');
+
+    // Convert Datamuse format
+    const posMap = {};
+    defs.forEach(d => {
+        const parts = d.split('\t'), pos = parts[0]||'unknown', def = parts[1]||d;
+        if (!posMap[pos]) posMap[pos]=[];
+        posMap[pos].push({ partOfSpeech: expandPos(pos), definition: def, example: `___ is a great example of ${word}.` });
+    });
+
+    return {
+        word, ipa: '', syllables: syllabify(word),
+        meanings: Object.values(posMap).flat().slice(0,4),
+        arabic, arabicAlternatives: [],
+        synonyms: syns, antonyms: ants,
+        collocations: [], mnemonic: '',
+        _source: 'fallback'
+    };
+}
+
+function expandPos(p){return{n:'noun',v:'verb',adj:'adjective',adv:'adverb',prep:'preposition',conj:'conjunction',interj:'interjection'}[p]||p;}
+
+// ══════════════════════════════════════════════
+//  LOOKUP ORCHESTRATOR
 // ══════════════════════════════════════════════
 async function lookupWord() {
     const word = document.getElementById('inp-word').value.trim();
     if (!word) { toast('⚠️ Please enter a word first!'); return; }
-    if (!geminiKey) { toast('⚠️ Please add your Gemini API key first!'); document.getElementById('gemini-key-input').focus(); return; }
 
-    currentLookupWord = word;
     document.getElementById('lookup-loading').style.display = 'block';
     document.getElementById('lookup-panel').style.display   = 'none';
     document.getElementById('lookup-error').style.display   = 'none';
     setStep(1);
 
-    try {
-        document.getElementById('loading-msg').textContent = '🤖 AI is analyzing the word…';
+    const hasKey = !!getKey();
+    setBadges([{ label: hasKey ? '✨ Gemini AI' : '📖 Dictionary', state: 'loading' }]);
 
-        const prompt = `You are an expert English vocabulary teacher for Arabic speakers. Analyze the word "${word}" and return ONLY valid JSON (no markdown, no code blocks) in this exact format:
-{
-  "word": "${word}",
-  "ipa": "/phonetic transcription/",
-  "syllables": "syl·la·bles",
-  "pos": "noun/verb/adjective/etc",
-  "definitions": [
-    {
-      "partOfSpeech": "noun",
-      "definition": "clear learner-friendly definition",
-      "example": "natural example sentence using the word"
-    },
-    {
-      "partOfSpeech": "verb",
-      "definition": "another definition if applicable",
-      "example": "another example sentence"
-    }
-  ],
-  "arabic": "الترجمة العربية الأكثر شيوعاً",
-  "arabicAlternatives": ["بديل١", "بديل٢", "بديل٣"],
-  "synonyms": [
-    {"word": "synonym1", "nuance": "when to use this instead"},
-    {"word": "synonym2", "nuance": "slight difference"}
-  ],
-  "antonyms": ["antonym1", "antonym2"],
-  "collocations": ["common phrase 1", "common phrase 2", "common phrase 3", "common phrase 4"],
-  "exampleSentence": "A natural sentence where ___ replaces the word",
-  "mnemonic": "A creative memory trick to remember this word, referencing Arabic sounds or concepts if helpful"
-}`;
+    let result = null;
 
-        const raw = await geminiAsk(prompt);
-
-        // Strip any markdown code fences if present
-        const cleaned = raw.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
-        let aiData;
-        try { aiData = JSON.parse(cleaned); }
-        catch(e) {
-            // Try to extract JSON from response
-            const match = cleaned.match(/\{[\s\S]*\}/);
-            if (match) aiData = JSON.parse(match[0]);
-            else throw new Error('AI returned invalid format. Please try again.');
+    if (hasKey) {
+        try {
+            document.getElementById('loading-msg').textContent = '✨ Asking Gemini AI…';
+            result = await lookupWithGemini(word);
+            setBadgeState(0, 'ok');
+        } catch(e) {
+            console.warn('Gemini failed:', e.message);
+            setBadgeState(0, 'fail');
+            // Fall through to fallback
         }
-
-        document.getElementById('lookup-loading').style.display = 'none';
-        renderAIResults(word, aiData);
-        setStep(2);
-
-    } catch(e) {
-        document.getElementById('lookup-loading').style.display = 'none';
-        document.getElementById('lookup-error').style.display   = 'block';
-        document.getElementById('lookup-error').innerHTML =
-            `❌ <strong>AI Lookup failed.</strong><br><br>${e.message}<br><br>
-             💡 <strong>Try:</strong><br>
-             • Check your API key is correct<br>
-             • Make sure you have internet access<br>
-             • Try again in a few seconds`;
     }
+
+    if (!result) {
+        try {
+            document.getElementById('loading-msg').textContent = '📖 Trying fallback dictionary…';
+            result = await lookupWithFallback(word);
+            setBadges([{ label: '📖 Fallback API', state: 'ok' }]);
+        } catch(e) {
+            document.getElementById('lookup-loading').style.display = 'none';
+            document.getElementById('lookup-error').style.display   = 'block';
+            document.getElementById('lookup-error').innerHTML =
+                `❌ <strong>Lookup failed.</strong><br><br>
+                 ${e.message}<br><br>
+                 💡 <strong>Best fix:</strong> Add a free <a href="#" onclick="showTab('settings')" style="color:var(--danger)">Gemini API key in Settings</a> — it bypasses all network issues.`;
+            return;
+        }
+    }
+
+    document.getElementById('lookup-loading').style.display = 'none';
+    renderGeminiResults(result);
+    setStep(2);
 }
 
-function renderAIResults(word, d) {
-    // Header
-    document.getElementById('lk-word').textContent   = d.word || word;
-    document.getElementById('lk-ipa').textContent    = d.ipa  || '';
-    document.getElementById('lk-pos').textContent    = d.pos  || '';
-    document.getElementById('lk-chunks').textContent = d.syllables || syllabify(word);
-    document.getElementById('final-ipa').value       = d.ipa  || '';
-    document.getElementById('final-chunks').value    = d.syllables || syllabify(word);
+// ══════════════════════════════════════════════
+//  RENDER — unified for Gemini + fallback
+// ══════════════════════════════════════════════
+function renderGeminiResults(r) {
+    document.getElementById('lk-word').textContent = r.word;
+    document.getElementById('lk-ipa').textContent  = r.ipa || '';
+    document.getElementById('final-ipa').value     = r.ipa || '';
+    document.getElementById('final-chunks').value  = r.syllables || syllabify(r.word);
+    document.getElementById('lk-chunks').textContent = r.syllables || syllabify(r.word);
     currentAudioUrl = null;
     document.getElementById('lk-audio-btn').style.display = 'none';
 
-    // Definitions tabs
+    // Meanings → tabs
     const tabsEl   = document.getElementById('def-tabs');
     const panelsEl = document.getElementById('def-panels');
-    tabsEl.innerHTML=''; panelsEl.innerHTML='';
+    tabsEl.innerHTML = ''; panelsEl.innerHTML = '';
 
-    const defs = d.definitions || [];
-    defs.forEach((def, i) => {
+    const meanings = r.meanings || [];
+    meanings.forEach((m, i) => {
         const tab = document.createElement('button');
-        tab.className = 'def-tab'+(i===0?' active':'');
-        tab.textContent = def.partOfSpeech || 'definition';
-        tab.onclick = ()=>switchTab(i);
+        tab.className = 'def-tab' + (i===0?' active':'');
+        tab.textContent = m.partOfSpeech;
+        tab.onclick = () => switchTab(i);
         tabsEl.appendChild(tab);
 
         const panel = document.createElement('div');
-        panel.className = 'def-panel'+(i===0?' active':'');
+        panel.className = 'def-panel' + (i===0?' active':'');
         panel.innerHTML = `
-            <div class="definition-item selected" onclick="pickDefAI(this,'${esc(def.definition)}','${esc(def.example||'')}','${esc(def.partOfSpeech||'')}')">
+            <div class="definition-item selected" onclick="pickDefDirect(this,'${esc(m.definition)}','${esc(m.example||'')}','${esc(m.partOfSpeech)}')">
                 <span class="select-indicator">✅</span>
-                <div class="def-text">${def.definition}</div>
-                ${def.example?`<div class="def-example">"${def.example}"</div>`:''}
+                <div class="def-text">${m.definition}</div>
+                ${m.example ? `<div class="def-example">"${m.example}"</div>` : ''}
             </div>`;
         panelsEl.appendChild(panel);
     });
 
-    // Set first definition
-    if (defs.length) {
-        document.getElementById('final-meaning').value = defs[0].definition;
-        if (defs[0].example)
-            document.getElementById('final-sentence').value = defs[0].example.replace(new RegExp(`\\b${word}\\b`,'gi'),'___');
+    if (meanings.length) {
+        document.getElementById('final-meaning').value = meanings[0].definition;
+        document.getElementById('lk-pos').textContent  = meanings[0].partOfSpeech;
+        if (meanings[0].example)
+            document.getElementById('final-sentence').value = meanings[0].example;
     }
 
     // Arabic
-    const arabicPanel = document.getElementById('arabic-panel');
-    if (d.arabic) {
-        document.getElementById('ar-word').textContent = d.arabic;
-        document.getElementById('final-arabic').value  = d.arabic;
-        document.getElementById('arabic-source-tag').textContent = '— via Gemini AI';
-        const alts = [d.arabic, ...(d.arabicAlternatives||[])].filter((v,i,a)=>a.indexOf(v)===i).slice(0,6);
-        document.getElementById('ar-meanings').innerHTML = alts.map(t=>
+    if (r.arabic) {
+        document.getElementById('ar-word').textContent   = r.arabic;
+        document.getElementById('final-arabic').value    = r.arabic;
+        const alts = [r.arabic, ...(r.arabicAlternatives||[])].filter(Boolean);
+        document.getElementById('ar-meanings').innerHTML = alts.map(t =>
             `<span class="arabic-chip" onclick="document.getElementById('final-arabic').value='${esc(t)}';toast('✅ Arabic selected!')">${t}</span>`
         ).join('');
-        arabicPanel.style.display = 'block';
-    } else { arabicPanel.style.display = 'none'; }
+        document.getElementById('arabic-panel').style.display = 'block';
+    } else {
+        document.getElementById('arabic-panel').style.display = 'none';
+        document.getElementById('final-arabic').placeholder = 'Translation unavailable — type manually';
+    }
 
-    // Synonyms with nuance
-    const syns = d.synonyms || [];
+    // Synonyms / Antonyms
+    const syns = (r.synonyms||[]).slice(0,8);
     document.getElementById('lk-synonyms').innerHTML = syns.length
-        ? syns.map(s=>`<div style="margin-bottom:0.4rem;"><span class="syn-chip" onclick="document.getElementById('inp-word').value='${s.word}';lookupWord()">${s.word}</span> <span style="font-size:0.8rem;color:var(--muted);">— ${s.nuance||''}</span></div>`).join('')
+        ? syns.map(s=>`<span class="syn-chip" onclick="document.getElementById('inp-word').value='${s}';lookupWord()">${s}</span>`).join('')
         : '<span class="text-muted">—</span>';
 
-    // Antonyms
-    const ants = d.antonyms || [];
+    const ants = (r.antonyms||[]).slice(0,6);
     document.getElementById('lk-antonyms').innerHTML = ants.length
         ? ants.map(a=>`<span class="ant-chip">${a}</span>`).join('')
         : '<span class="text-muted">—</span>';
 
     // Collocations
-    const collocs = d.collocations || [];
+    const collocs = (r.collocations||[]).slice(0,8);
     document.getElementById('lk-collocations').innerHTML = collocs.length
         ? collocs.map(c=>`<span class="colloc-chip" style="cursor:pointer;" onclick="addColloc('${esc(c)}')">${c}</span>`).join('')
         : '<span class="text-muted">—</span>';
     document.getElementById('final-collocations').value = collocs.slice(0,4).join(', ');
 
     // Mnemonic
-    if (d.mnemonic) {
-        document.getElementById('ai-mnemonic-text').textContent = d.mnemonic;
-        document.getElementById('ai-mnemonic-box').style.display = 'block';
-        document.getElementById('final-mnemonic').value = d.mnemonic;
-    }
-
-    // Example sentence
-    if (d.exampleSentence) document.getElementById('final-sentence').value = d.exampleSentence;
+    if (r.mnemonic) document.getElementById('final-mnemonic').value = r.mnemonic;
 
     document.getElementById('lookup-panel').style.display = 'block';
 }
 
-async function regenerateMnemonic() {
-    const word = document.getElementById('inp-word').value.trim();
-    if (!word) return;
-    document.getElementById('ai-mnemonic-text').textContent = '⏳ Generating…';
-    try {
-        const res = await geminiAsk(`Create a creative, memorable mnemonic or memory trick for the English word "${word}" for an Arabic speaker. Make it vivid, funny, or story-based. Keep it under 2 sentences.`);
-        document.getElementById('ai-mnemonic-text').textContent = res;
-        document.getElementById('final-mnemonic').value = res;
-    } catch(e) { document.getElementById('ai-mnemonic-text').textContent = '❌ Failed: ' + e.message; }
-}
-
-function pickDefAI(el, def, ex, pos) {
-    document.querySelectorAll('.definition-item').forEach(d=>{d.classList.remove('selected');d.querySelector('.select-indicator').style.display='none';});
-    el.classList.add('selected'); el.querySelector('.select-indicator').style.display='inline';
-    document.getElementById('final-meaning').value = def;
-    document.getElementById('lk-pos').textContent  = pos;
-    const word = document.getElementById('inp-word').value.trim();
-    if (ex) document.getElementById('final-sentence').value = ex.replace(new RegExp(`\\b${word}\\b`,'gi'),'___');
-    toast('✅ Definition selected!');
-}
-
-// ══════════════════════════════════════════════
-//  PRACTICE — AI features
-// ══════════════════════════════════════════════
-async function getAIHint() {
-    if (!currentWord) return;
-    if (!geminiKey) { toast('⚠️ Add your Gemini API key first!'); return; }
-    document.getElementById('hint-display').textContent = '🤖 Getting hint…';
-    try {
-        const res = await geminiAsk(
-            `Give a single creative hint for the English word "${currentWord.word}" WITHOUT saying the word itself. ` +
-            `The learner is Arabic-speaking. Hint at the meaning, sound, or a memory trick. Max 1 sentence.`
-        );
-        document.getElementById('hint-display').textContent = res;
-        hintsUsed.push('ai-hint');
-    } catch(e) {
-        document.getElementById('hint-display').textContent = '❌ AI hint failed.';
-    }
-}
-
-async function checkUserSentence() {
-    const sentence = document.getElementById('user-sentence-input').value.trim();
-    if (!sentence) { toast('Write a sentence first!'); return; }
-    if (!geminiKey) { toast('⚠️ Add your Gemini API key first!'); return; }
-    const feedbackEl = document.getElementById('sentence-feedback');
-    feedbackEl.style.display = 'block';
-    feedbackEl.textContent = '🤖 AI is checking your sentence…';
-    try {
-        const res = await geminiAsk(
-            `An Arabic-speaking English learner wrote this sentence using the word "${currentWord.word}":\n"${sentence}"\n\n` +
-            `Please:\n1. Say if the usage is correct or not\n2. Explain any grammar or usage errors\n3. Suggest an improved version if needed\n4. Give a short encouragement\nBe friendly and concise.`
-        );
-        feedbackEl.textContent = res;
-    } catch(e) {
-        feedbackEl.textContent = '❌ AI check failed: ' + e.message;
-    }
-}
-
-async function sendChat() {
-    const input = document.getElementById('chat-input');
-    const msg   = input.value.trim();
-    if (!msg) return;
-    if (!geminiKey) { toast('⚠️ Add your Gemini API key first!'); return; }
-    input.value = '';
-    appendChat('chat-messages', msg, 'user');
-    const loadingEl = appendChat('chat-messages', '⏳ Thinking…', 'ai loading');
-    try {
-        const context = `The learner is studying the English word "${currentWord?.word || ''}" (meaning: "${currentWord?.meaning || ''}"). They are an Arabic speaker learning English.`;
-        const res = await geminiAsk(`${context}\n\nLearner asks: ${msg}\n\nAnswer helpfully and concisely.`);
-        loadingEl.className = 'chat-msg ai';
-        loadingEl.textContent = res;
-    } catch(e) {
-        loadingEl.className = 'chat-msg ai';
-        loadingEl.textContent = '❌ Error: ' + e.message;
-    }
-    scrollChat('chat-messages');
-}
-
-async function sendCoachChat() {
-    const input = document.getElementById('coach-chat-input');
-    const msg   = input.value.trim();
-    if (!msg) return;
-    if (!geminiKey) { toast('⚠️ Add your Gemini API key first!'); return; }
-    input.value = '';
-    appendChat('coach-chat-messages', msg, 'user');
-    const loadingEl = appendChat('coach-chat-messages', '⏳ Thinking…', 'ai loading');
-    try {
-        const wordList = vocab.slice(0,30).map(w=>w.word).join(', ');
-        const context  = `You are an expert English learning coach. The learner is Arabic-speaking and has these words in their vocabulary list: ${wordList}. Their total words: ${vocab.length}, mastered: ${vocab.filter(w=>(w.level||0)>=4).length}.`;
-        const res = await geminiAsk(`${context}\n\nLearner asks: ${msg}`);
-        loadingEl.className = 'chat-msg ai';
-        loadingEl.textContent = res;
-    } catch(e) {
-        loadingEl.className = 'chat-msg ai';
-        loadingEl.textContent = '❌ Error: ' + e.message;
-    }
-    scrollChat('coach-chat-messages');
-}
-
-function appendChat(containerId, text, cls) {
-    const container = document.getElementById(containerId);
-    const el = document.createElement('div');
-    el.className = `chat-msg ${cls}`;
-    el.textContent = text;
-    container.appendChild(el);
-    scrollChat(containerId);
-    return el;
-}
-function scrollChat(id) { const el=document.getElementById(id); el.scrollTop=el.scrollHeight; }
-
-// ══════════════════════════════════════════════
-//  AI COACH FEATURES
-// ══════════════════════════════════════════════
-async function runCoach(type) {
-    if (!geminiKey) { toast('⚠️ Add your Gemini API key first!'); return; }
-    if (!vocab.length) { toast('⚠️ Add some words first!'); return; }
-
-    document.getElementById('coach-loading').style.display = 'block';
-    document.getElementById('coach-result').style.display  = 'none';
-
-    const wordList    = vocab.map(w=>`${w.word} (${w.meaning.substring(0,40)})`).join('\n');
-    const dueWords    = vocab.filter(isDue).map(w=>w.word).join(', ');
-    const weakProfile = buildWeaknessText();
-
-    const prompts = {
-        analyze: `You are an expert English vocabulary coach for Arabic speakers.\n\nHere are all the learner's vocabulary words:\n${wordList}\n\nWeakness profile: ${weakProfile}\n\nPlease provide:\n1. 📊 Overall assessment of their vocabulary level\n2. 🎯 Top 3 areas to focus on\n3. 💡 3 specific learning strategies tailored to their weakness profile\n4. 🌟 Words they should prioritize this week\n5. 📈 Encouragement and next steps`,
-
-        weak: `You are an expert English vocabulary coach for Arabic speakers.\n\nDue words: ${dueWords}\nWeakness profile: ${weakProfile}\n\nFor the top 5 most challenging words, explain:\n1. Why Arabic speakers typically struggle with each word\n2. A specific memory trick for each\n3. A common mistake to avoid`,
-
-        story: `Write a short, engaging story (150-200 words) that naturally uses ALL of these English words: ${dueWords || vocab.slice(0,8).map(w=>w.word).join(', ')}.\n\nBold each vocabulary word. Make the story interesting and memorable. Add a brief Arabic translation hint for each bolded word in parentheses.`,
-
-        quiz: `Create a fill-in-the-blank quiz using these words: ${dueWords || vocab.slice(0,10).map(w=>w.word).join(', ')}\n\nFormat:\n- 8 sentences with blanks\n- Word bank at the top\n- Answers at the bottom (hidden with "ANSWERS:" label)\nMake sentences natural and contextual.`,
-
-        tips: `You are an expert English coach for Arabic speakers.\n\nWeakness profile: ${weakProfile}\nTotal words: ${vocab.length}\nMastered: ${vocab.filter(w=>(w.level||0)>=4).length}\n\nGive 5 highly specific, actionable memory and recall strategies tailored to this learner's exact weakness profile. Include Arabic-specific tips where relevant.`,
-
-        sentences: `For each of these English words, write 3 natural example sentences at different difficulty levels (simple, intermediate, advanced):\n${(dueWords || vocab.slice(0,5).map(w=>w.word).join(', '))}\n\nFormat clearly with the word as a header. Include the Arabic meaning in parentheses after each word header.`,
-    };
-
-    try {
-        const res = await geminiAsk(prompts[type]);
-        document.getElementById('coach-loading').style.display = 'none';
-        document.getElementById('coach-result').style.display  = 'block';
-        document.getElementById('coach-result').textContent    = res;
-    } catch(e) {
-        document.getElementById('coach-loading').style.display = 'none';
-        toast('❌ AI Coach error: ' + e.message);
-    }
-}
-
-function buildWeaknessText() {
-    const counts = {meaning:0,sound:0,spelling:0,speed:0,collocation:0};
-    reviewHistory.forEach(r=>(r.weaknesses||[]).forEach(w=>{if(w in counts)counts[w]++;}));
-    return Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${k}:${v}`).join(', ') || 'no data yet';
-}
-
-// ══════════════════════════════════════════════
-//  FETCH FALLBACK (for audio only via dictionaryapi)
-// ══════════════════════════════════════════════
-function timedFetch(url, ms) {
-    return new Promise((resolve,reject)=>{
-        const ctrl=new AbortController();
-        const id=setTimeout(()=>{ctrl.abort();reject(new Error('Timeout'));},ms);
-        fetch(url,{signal:ctrl.signal}).then(r=>{clearTimeout(id);resolve(r);}).catch(e=>{clearTimeout(id);reject(e);});
-    });
-}
-
-// ══════════════════════════════════════════════
-//  HELPERS
-// ══════════════════════════════════════════════
 function switchTab(i){document.querySelectorAll('.def-tab').forEach((t,j)=>t.classList.toggle('active',i===j));document.querySelectorAll('.def-panel').forEach((p,j)=>p.classList.toggle('active',i===j));}
+function pickDefDirect(el,def,ex,pos){document.querySelectorAll('.definition-item').forEach(d=>{d.classList.remove('selected');d.querySelector('.select-indicator').style.display='none';});el.classList.add('selected');el.querySelector('.select-indicator').style.display='inline';document.getElementById('final-meaning').value=def;document.getElementById('lk-pos').textContent=pos;if(ex)document.getElementById('final-sentence').value=ex;toast('✅ Definition selected!');}
 function addColloc(c){const el=document.getElementById('final-collocations');el.value=el.value.trim()?el.value.trim()+', '+c:c;toast('🔗 Collocation added!');}
 function syllabify(word){const v=/[aeiouy]/i;let o=word[0]||'';for(let i=1;i<word.length-1;i++){o+=word[i];if(v.test(word[i])&&!v.test(word[i+1]||'')&&i<word.length-2)o+='·';}o+=word.length>1?word[word.length-1]:'';return o.replace(/·+/g,'·').replace(/^·|·$/g,'')||word;}
 function playAudio(){if(!currentAudioUrl)return;const url=currentAudioUrl.startsWith('//')?'https:'+currentAudioUrl:currentAudioUrl;new Audio(url).play().catch(()=>toast('⚠️ Could not play audio.'));}
+function setBadges(items){document.getElementById('api-status').innerHTML=items.map((it,i)=>`<span class="api-badge api-${it.state}" id="api-badge-${i}">${it.label} ${it.state==='loading'?'⏳':it.state==='ok'?'✅':'❌'}</span>`).join('');}
+function setBadgeState(i,state){const el=document.getElementById(`api-badge-${i}`);if(!el)return;const icons={ok:'✅',fail:'❌',loading:'⏳'};el.className=`api-badge api-${state}`;el.textContent=el.textContent.replace(/[✅❌⏳]/g,'')+icons[state];}
 function setStep(n){for(let i=1;i<=3;i++){const s=document.getElementById(`step${i}`);if(i<n){s.className='step done';s.textContent='✓';}else if(i===n){s.className='step active';s.textContent=i;}else{s.className='step';s.textContent=i;}if(i<3)document.getElementById(`line${i}`).className='step-line'+(i<n?' done':'');}}
-function resetLookup(){document.getElementById('inp-word').value='';document.getElementById('lookup-panel').style.display='none';document.getElementById('lookup-error').style.display='none';addWeaknesses=[];document.querySelectorAll('#add-weakness-tags .tag').forEach(t=>t.classList.remove('selected'));document.getElementById('ai-mnemonic-box').style.display='none';setStep(1);document.getElementById('inp-word').focus();}
+function resetLookup(){document.getElementById('inp-word').value='';document.getElementById('lookup-panel').style.display='none';document.getElementById('lookup-error').style.display='none';document.getElementById('api-status').innerHTML='';addWeaknesses=[];document.querySelectorAll('#add-weakness-tags .tag').forEach(t=>t.classList.remove('selected'));setStep(1);document.getElementById('inp-word').focus();}
 function esc(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
+
+// ══════════════════════════════════════════════
+//  SAVE WORD
+// ══════════════════════════════════════════════
+function saveWord(){const word=document.getElementById('inp-word').value.trim(),meaning=document.getElementById('final-meaning').value.trim();if(!word||!meaning){toast('⚠️ Word and meaning are required!');return;}if(vocab.find(w=>w.word.toLowerCase()===word.toLowerCase()))if(!confirm(`"${word}" already exists. Add anyway?`))return;vocab.push({id:Date.now().toString(),word,meaning,arabic:document.getElementById('final-arabic').value.trim(),ipa:document.getElementById('final-ipa').value.trim(),chunks:document.getElementById('final-chunks').value.trim(),pos:document.getElementById('lk-pos').textContent,sentence:document.getElementById('final-sentence').value.trim(),collocations:document.getElementById('final-collocations').value.trim(),mnemonic:document.getElementById('final-mnemonic').value.trim(),weaknesses:[...addWeaknesses],level:0,nextReview:null,addedDate:new Date().toISOString(),reviewCount:0});save();toast(`✅ "${word}" saved!`);setStep(3);setTimeout(resetLookup,1500);updateDashboard();}
 function toggleAddTag(el,v){el.classList.toggle('selected');addWeaknesses.includes(v)?(addWeaknesses=addWeaknesses.filter(x=>x!==v)):addWeaknesses.push(v);}
 function toggleReviewTag(el,v){el.classList.toggle('selected');selectedReviewWeaknesses.includes(v)?(selectedReviewWeaknesses=selectedReviewWeaknesses.filter(x=>x!==v)):selectedReviewWeaknesses.push(v);}
 
 // ══════════════════════════════════════════════
 //  NAVIGATION
 // ══════════════════════════════════════════════
-function showTab(tab){
-    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-    document.querySelectorAll('.nav-links button').forEach(b=>b.classList.remove('active'));
-    document.getElementById(tab).classList.add('active');
-    const idx=['dashboard','add','practice','library','coach'].indexOf(tab);
-    document.querySelectorAll('.nav-links button')[idx].classList.add('active');
-    if(tab==='dashboard')updateDashboard();
-    if(tab==='library')renderLibrary();
-}
+function showTab(tab){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-links button').forEach(b=>b.classList.remove('active'));document.getElementById(tab).classList.add('active');const idx=['dashboard','add','practice','library','settings'].indexOf(tab);if(idx>=0)document.querySelectorAll('.nav-links button')[idx].classList.add('active');if(tab==='dashboard')updateDashboard();if(tab==='library')renderLibrary();if(tab==='settings')updateKeyStatus();if(tab==='add')updateKeyStatus();}
 
 // ══════════════════════════════════════════════
 //  DASHBOARD
@@ -1015,9 +859,44 @@ function getNextInterval(l,r){if(r===0)return 1;if(r===1)return Math.max(1,INTER
 //  PRACTICE
 // ══════════════════════════════════════════════
 function startPractice(){showTab('practice');const due=vocab.filter(isDue);if(!vocab.length){document.getElementById('no-practice').style.display='block';document.getElementById('practice-content').style.display='none';document.getElementById('session-complete').style.display='none';return;}sessionQueue=shuffle(due.length?[...due]:[...vocab]).slice(0,20);sessionIdx=0;sessionStats={done:0,correct:0,forgot:0};document.getElementById('session-complete').style.display='none';document.getElementById('practice-card-wrap').style.display='block';document.getElementById('no-practice').style.display='none';document.getElementById('practice-content').style.display='block';document.getElementById('session-progress').style.display='flex';loadCard();}
-function loadCard(){if(sessionIdx>=sessionQueue.length){showComplete();return;}currentWord=sessionQueue[sessionIdx];hintsUsed=[];selectedReviewWeaknesses=[];document.getElementById('recall-input').value='';document.getElementById('check-result').textContent='';document.getElementById('hint-display').textContent='';document.getElementById('answer-area').style.display='none';document.getElementById('show-answer-wrap').style.display='block';document.getElementById('practice-sentence').style.display='none';document.getElementById('practice-arabic').style.display='none';document.getElementById('youglish-container').style.display='none';document.getElementById('sentence-feedback').style.display='none';document.getElementById('user-sentence-input').value='';document.getElementById('chat-messages').innerHTML='';document.querySelectorAll('#review-weakness-tags .tag').forEach(t=>t.classList.remove('selected'));document.getElementById('practice-meaning').innerHTML=`<strong>📖 Definition:</strong> ${currentWord.meaning}`;document.getElementById('practice-pos-tag').textContent=currentWord.pos?`[${currentWord.pos}]`:'';document.getElementById('practice-weakness-tag').textContent=currentWord.weaknesses?.length?`⚠️ ${currentWord.weaknesses.join(', ')}`:'';document.getElementById('chat-word-label').textContent=currentWord.word;updateProgress();document.getElementById('recall-input').focus();}
+function loadCard(){if(sessionIdx>=sessionQueue.length){showComplete();return;}currentWord=sessionQueue[sessionIdx];hintsUsed=[];selectedReviewWeaknesses=[];document.getElementById('recall-input').value='';document.getElementById('check-result').textContent='';document.getElementById('hint-display').textContent='';document.getElementById('answer-area').style.display='none';document.getElementById('show-answer-wrap').style.display='block';document.getElementById('practice-sentence').style.display='none';document.getElementById('practice-arabic').style.display='none';document.getElementById('youglish-container').style.display='none';document.querySelectorAll('#review-weakness-tags .tag').forEach(t=>t.classList.remove('selected'));document.getElementById('practice-meaning').innerHTML=`<strong>📖 Definition:</strong> ${currentWord.meaning}`;document.getElementById('practice-pos-tag').textContent=currentWord.pos?`[${currentWord.pos}]`:'';document.getElementById('practice-weakness-tag').textContent=currentWord.weaknesses?.length?`⚠️ ${currentWord.weaknesses.join(', ')}`:'';updateProgress();document.getElementById('recall-input').focus();}
 function updateProgress(){document.getElementById('sp-done').textContent=sessionStats.done;document.getElementById('sp-remaining').textContent=sessionQueue.length-sessionIdx;document.getElementById('sp-correct').textContent=sessionStats.correct;document.getElementById('sp-forgot').textContent=sessionStats.forgot;}
 function showSentence(){if(!currentWord.sentence){toast('No sentence for this word.');return;}const el=document.getElementById('practice-sentence');el.innerHTML=`📖 ${currentWord.sentence.replace(/___/g,'<strong style="color:var(--primary)">___</strong>')}`;el.style.display='block';hintsUsed.push('sentence');}
 function toggleArabicHint(){const el=document.getElementById('practice-arabic');if(!currentWord.arabic){toast('No Arabic translation for this word.');return;}if(el.style.display==='none'){el.textContent=`🌙 ${currentWord.arabic}`;el.style.display='block';hintsUsed.push('arabic');}else el.style.display='none';}
 function showHint(type){const word=currentWord.word,chunks=currentWord.chunks||word;let hint='';if(type==='letter'){hint=word[0].toUpperCase()+' _ _ _';hintsUsed.push('letter');}if(type==='syllable'){hint=chunks.split('·')[0]+' ...';hintsUsed.push('syllable');}if(type==='chunks'){hint=chunks;hintsUsed.push('chunks');}document.getElementById('hint-display').textContent=hint;}
-function checkRecall(){const input=document.getElementById('recall-input').value.trim().toLowerCase(),target=currentWord.word.toLowerCase(),el=document.getElementById('check-result');if(!input){toast('Type a word first!');return;}if(input===target){el.textContent='✅ Correct! Now reveal the full answer.';el.className='check-result correct';}else{el.textContent='❌ Not quite —
+function checkRecall(){const input=document.getElementById('recall-input').value.trim().toLowerCase(),target=currentWord.word.toLowerCase(),el=document.getElementById('check-result');if(!input){toast('Type a word first!');return;}if(input===target){el.textContent='✅ Correct! Now reveal the full answer.';el.className='check-result correct';}else{el.textContent='❌ Not quite — try again or reveal the answer.';el.className='check-result wrong';}}
+function revealAnswer(){document.getElementById('answer-area').style.display='block';document.getElementById('show-answer-wrap').style.display='none';document.getElementById('answer-word').textContent=currentWord.word;document.getElementById('answer-ipa').textContent=currentWord.ipa||'';document.getElementById('answer-arabic').textContent=currentWord.arabic?`🌙 ${currentWord.arabic}`:'';document.getElementById('answer-colloc').innerHTML=currentWord.collocations?'🔗 '+currentWord.collocations.split(',').map(c=>`<span class="colloc-chip">${c.trim()}</span>`).join(' '):'';if(currentWord.sentence){const s=document.getElementById('answer-sentence');s.innerHTML=currentWord.sentence.replace(/___/g,`<strong style="color:var(--primary)">${currentWord.word}</strong>`);s.style.display='block';}document.getElementById('answer-mnemonic').textContent=currentWord.mnemonic?`💡 ${currentWord.mnemonic}`:'';document.getElementById('youglish-container').style.display='block';loadYouGlish();}
+function loadYouGlish(){if(typeof YG!=='undefined'){if(youglishWidget)youglishWidget.fetch(currentWord.word,'english');else{youglishWidget=new YG.Widget('youglish_widget',{width:'100%',components:8,events:{onFetchDone:e=>{if(e.totalResult===0)document.getElementById('youglish-container').style.display='none';}}});youglishWidget.fetch(currentWord.word,'english');}}else{document.getElementById('youglish_widget').innerHTML=`<iframe src="https://youglish.com/pronounce/${encodeURIComponent(currentWord.word)}/english" width="100%" height="380" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="border-radius:8px;"></iframe>`;}}
+function rateWord(rating){const newLevel=getNewLevel(currentWord.level||0,rating),interval=getNextInterval(currentWord.level||0,rating),next=new Date();next.setDate(next.getDate()+interval);const idx=vocab.findIndex(w=>w.id===currentWord.id);if(idx!==-1){vocab[idx].level=newLevel;vocab[idx].nextReview=next.toISOString();vocab[idx].reviewCount=(vocab[idx].reviewCount||0)+1;vocab[idx].lastReview=new Date().toISOString();}reviewHistory.push({word:currentWord.word,arabic:currentWord.arabic||'',wordId:currentWord.id,rating,hintsUsed:[...hintsUsed],weaknesses:[...selectedReviewWeaknesses],date:new Date().toISOString(),newLevel,nextReview:next.toISOString()});sessionStats.done++;rating>=2?sessionStats.correct++:sessionStats.forgot++;save();sessionIdx++;loadCard();}
+function showComplete(){document.getElementById('practice-content').style.display='none';document.getElementById('session-complete').style.display='block';document.getElementById('session-progress').style.display='none';const today=new Date().toDateString(),last=localStorage.getItem('vocabCoach_lastPractice');if(last!==today){const y=new Date();y.setDate(y.getDate()-1);streak=last===y.toDateString()?streak+1:1;localStorage.setItem('vocabCoach_lastPractice',today);save();}document.getElementById('session-summary-stats').innerHTML=`<div class="stat-box"><h3>${sessionStats.done}</h3><p>Reviewed</p></div><div class="stat-box"><h3>${sessionStats.correct}</h3><p>Good/Easy</p></div><div class="stat-box"><h3>${sessionStats.forgot}</h3><p>Forgot/Hard</p></div><div class="stat-box"><h3>${streak}🔥</h3><p>Day Streak</p></div>`;}
+
+// ══════════════════════════════════════════════
+//  LIBRARY
+// ══════════════════════════════════════════════
+function setFilter(f,btn){currentFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderLibrary();}
+function renderLibrary(){const search=document.getElementById('search-input').value.toLowerCase();const words=vocab.filter(w=>{const hit=w.word.toLowerCase().includes(search)||w.meaning.toLowerCase().includes(search)||(w.arabic||'').includes(search);if(!hit)return false;if(currentFilter==='all')return true;if(currentFilter==='due')return isDue(w);if(currentFilter==='new')return !w.nextReview;if(currentFilter==='mastered')return(w.level||0)>=4;return w.weaknesses&&w.weaknesses.includes(currentFilter);});const empty=document.getElementById('library-empty'),table=document.getElementById('library-table'),body=document.getElementById('library-body');if(!words.length){empty.style.display='block';table.style.display='none';return;}empty.style.display='none';table.style.display='table';const ll=['New','Learning','Reviewing','Advanced','Mastered'];body.innerHTML=words.map(w=>`<tr><td><strong>${w.word}</strong><br><span style="font-size:0.78rem;color:var(--muted)">${w.ipa||''}</span><br><span style="font-size:0.78rem;color:var(--muted)">${w.chunks||''}</span></td><td style="direction:rtl;text-align:right;font-size:1rem;color:#92400E;">${w.arabic||'—'}</td><td style="max-width:180px;font-size:0.85rem;">${w.meaning.substring(0,70)}${w.meaning.length>70?'...':''}</td><td><span class="level-badge level-${Math.min(w.level||0,4)}">${ll[Math.min(w.level||0,4)]}</span></td><td style="font-size:0.82rem;">${w.nextReview?new Date(w.nextReview).toLocaleDateString():'Now'}</td><td><button class="btn btn-outline btn-sm" onclick="openEdit('${w.id}')">✏️</button><button class="btn btn-danger btn-sm" onclick="deleteWord('${w.id}')" style="margin-left:0.25rem;">🗑️</button></td></tr>`).join('');}
+function deleteWord(id){if(!confirm('Delete this word?'))return;vocab=vocab.filter(w=>w.id!==id);save();renderLibrary();updateDashboard();toast('🗑️ Word deleted.');}
+function openEdit(id){const w=vocab.find(x=>x.id===id);if(!w)return;['id','word','ipa','chunks','pos','meaning','arabic','sentence','collocations','mnemonic'].forEach(f=>document.getElementById(`edit-${f}`).value=w[f]||'');document.getElementById('edit-modal').classList.add('open');}
+function closeModal(){document.getElementById('edit-modal').classList.remove('open');}
+function saveEdit(){const id=document.getElementById('edit-id').value,idx=vocab.findIndex(w=>w.id===id);if(idx===-1)return;['word','ipa','chunks','pos','meaning','arabic','sentence','collocations','mnemonic'].forEach(f=>{vocab[idx][f]=document.getElementById(`edit-${f}`).value.trim();});save();closeModal();renderLibrary();toast('✅ Word updated!');}
+
+// ══════════════════════════════════════════════
+//  EXPORT / IMPORT
+// ══════════════════════════════════════════════
+function exportJSON(){download(JSON.stringify({vocab,reviewHistory,exportDate:new Date().toISOString()},null,2),'VocabCoach_Backup.json','application/json');toast('💾 Backup saved!');}
+function exportCSV(){const h=['Word','IPA','Chunks','POS','Meaning (EN)','Meaning (AR)','Sentence','Collocations','Mnemonic','Level','Next Review'];const rows=vocab.map(w=>[w.word,w.ipa||'',w.chunks||'',w.pos||'',w.meaning,w.arabic||'',w.sentence||'',w.collocations||'',w.mnemonic||'',w.level||0,w.nextReview||''].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));download([h.join(','),...rows].join('\n'),'VocabCoach.csv','text/csv');toast('📊 CSV exported!');}
+function importJSON(event){const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=e=>{try{const data=JSON.parse(e.target.result);if(data.vocab&&confirm(`Import ${data.vocab.length} words?`)){const ids=new Set(vocab.map(w=>w.id));data.vocab.forEach(w=>{if(!ids.has(w.id))vocab.push(w);});if(data.reviewHistory)reviewHistory.push(...data.reviewHistory);save();renderLibrary();updateDashboard();toast(`✅ Imported ${data.vocab.length} words!`);}}catch{toast('❌ Invalid backup file.');}};reader.readAsText(file);event.target.value='';}
+function download(content,filename,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=filename;a.click();}
+
+// ══════════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════════
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+function toast(msg,dur=2800){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),dur);}
+
+load();
+updateDashboard();
+updateKeyStatus();
+</script>
+</body>
+</html>
