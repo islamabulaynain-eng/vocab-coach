@@ -590,71 +590,71 @@ async function callGemini(prompt, key) {
     var k = key || getKey();
     if (!k) throw new Error('No API key');
 
-    // Step 1: Fetch available models from Google directly
-    var availableModels = [];
+    // ── Step 1: Fetch live model list from Google ──────────────────
+    var models = [];
     try {
-        var listRes = await fetch(
-            'https://generativelanguage.googleapis.com/v1beta/models?key=' + k
-        );
+        var listRes  = await fetch('https://generativelanguage.googleapis.com/v1beta/models?key=' + k);
         var listData = await listRes.json();
+
         if (listData && listData.models) {
-availableModels = listData.models
-    .filter(function(m) {
-        var name = m.name.toLowerCase();
-        return m.supportedGenerationMethods &&
-               m.supportedGenerationMethods.indexOf('generateContent') !== -1 &&
-               name.indexOf('gemini') !== -1 &&
-               name.indexOf('embedding') === -1 &&
-               name.indexOf('aqa') === -1 &&
-               name.indexOf('tts') === -1 &&
-               name.indexOf('vision') === -1 &&
-               name.indexOf('image') === -1 &&
-               name.indexOf('exp') === -1 &&
-               name.indexOf('preview') === -1;
-    })
+            var BLOCK = ['tts','vision','image','embedding','aqa','code',
+                         'retrieval','answer','bison','gecko','palm'];
+
+            models = listData.models
+                .filter(function(m) {
+                    var name = (m.name || '').toLowerCase();
+                    // Must support generateContent
+                    if (!m.supportedGenerationMethods ||
+                        m.supportedGenerationMethods.indexOf('generateContent') === -1) return false;
+                    // Must be a gemini model
+                    if (name.indexOf('gemini') === -1) return false;
+                    // Block non-text / restricted model types
+                    for (var i = 0; i < BLOCK.length; i++) {
+                        if (name.indexOf(BLOCK[i]) !== -1) return false;
+                    }
+                    return true;
+                })
                 .map(function(m) {
-                    // m.name is like "models/gemini-2.5-flash" — strip the prefix
                     return m.name.replace('models/', '');
+                })
+                .sort(function(a, b) {
+                    // Score: higher = better, try first
+                    function score(n) {
+                        var s = 0;
+                        // Prefer flash over pro (flash has more free quota)
+                        if (n.indexOf('flash') !== -1) s += 30;
+                        if (n.indexOf('pro')   !== -1) s += 10;
+                        if (n.indexOf('lite')  !== -1) s -= 10;
+                        // Prefer newer versions
+                        if (n.indexOf('2.5') !== -1) s += 25;
+                        if (n.indexOf('2.0') !== -1) s += 15;
+                        if (n.indexOf('1.5') !== -1) s += 5;
+                        // Penalise preview/exp (less stable quota)
+                        if (n.indexOf('preview') !== -1) s -= 20;
+                        if (n.indexOf('exp')     !== -1) s -= 25;
+                        return s;
+                    }
+                    return score(b) - score(a);
                 });
         }
     } catch(e) {
-        console.warn('Could not fetch model list:', e.message);
+        console.warn('⚠️ Could not fetch model list:', e.message);
     }
 
-    // Step 2: Preferred order — pick first available match
-    var preferred = [
-        'gemini-2.5-flash',
-        'gemini-2.5-pro',
-        'gemini-2.0-flash',
-        'gemini-2.0-flash-lite',
-        'gemini-1.5-flash',
-        'gemini-1.5-pro'
-    ];
-
-    var models = [];
-
-    // Add preferred models that exist in the available list
-    preferred.forEach(function(p) {
-        availableModels.forEach(function(a) {
-            if (a.indexOf(p) !== -1 && models.indexOf(a) === -1) {
-                models.push(a);
-            }
-        });
-    });
-
-    // Fallback: if nothing matched, use whatever is available
+    // ── Step 2: Hard safety net if list fetch failed ───────────────
     if (!models.length) {
-        models = availableModels.length ? availableModels : ['gemini-2.5-flash', 'gemini-2.0-flash'];
+        models = ['gemini-2.0-flash-lite', 'gemini-2.0-flash'];
     }
 
-    console.log('🤖 Models to try:', models);
+    console.log('🤖 Models ranked & ready:', models);
 
-    // Step 3: Try each model until one works
+    // ── Step 3: Try each model in order ───────────────────────────
     var lastErr;
     for (var i = 0; i < models.length; i++) {
         var model = models[i];
         try {
-            var url  = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + k;
+            var url  = 'https://generativelanguage.googleapis.com/v1beta/models/'
+                       + model + ':generateContent?key=' + k;
             var body = {
                 contents: [{ parts: [{ text: prompt }] }],
                 generationConfig: { temperature: 0.3, maxOutputTokens: 1024 }
@@ -664,10 +664,23 @@ availableModels = listData.models
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
+
             if (!res.ok) {
                 var errData = await res.json().catch(function() { return {}; });
-                throw new Error(errData.error ? errData.error.message : ('HTTP ' + res.status));
+                var msg = errData.error ? errData.error.message : ('HTTP ' + res.status);
+                // If quota or deprecated — skip silently to next model
+                if (msg.indexOf('quota')      !== -1 ||
+                    msg.indexOf('deprecated') !== -1 ||
+                    msg.indexOf('no longer')  !== -1 ||
+                    msg.indexOf('not found')  !== -1 ||
+                    msg.indexOf('not support')!== -1) {
+                    console.warn('⏭️ Skipping ' + model + ': ' + msg.substring(0, 80));
+                    lastErr = new Error(msg);
+                    continue;
+                }
+                throw new Error(msg);
             }
+
             var data = await res.json();
             var text = data &&
                        data.candidates &&
@@ -677,17 +690,20 @@ availableModels = listData.models
                        data.candidates[0].content.parts[0] &&
                        data.candidates[0].content.parts[0].text
                        ? data.candidates[0].content.parts[0].text : '';
+
             if (text) {
-                console.log('✅ Gemini model used: ' + model);
+                console.log('✅ Success with model: ' + model);
                 return text;
             }
             throw new Error('Empty response');
+
         } catch(e) {
             console.warn('❌ ' + model + ': ' + e.message);
             lastErr = e;
         }
     }
-    throw lastErr;
+
+    throw lastErr || new Error('All Gemini models failed.');
 }
 
 // ══════════════════════════════════════════════
