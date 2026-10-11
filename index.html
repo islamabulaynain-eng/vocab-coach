@@ -818,6 +818,49 @@ function renderGeminiResults(r) {
     document.getElementById('lookup-panel').style.display = 'block';
 }
 
+async function callGemini(prompt, key) {
+    const k = key || getKey();
+    if (!k) throw new Error('No API key');
+
+    const models = [
+        'gemini-2.5-flash',
+        'gemini-2.5-pro',
+        'gemini-1.5-flash',
+        'gemini-1.5-pro',
+    ];
+
+    let lastErr;
+    for (const model of models) {
+        try {
+            const url  = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${k}`;
+            const body = {
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: { temperature: 0.3, maxOutputTokens: 1024 }
+            };
+            const res = await fetch(url, {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify(body)
+            });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err?.error?.message || `HTTP ${res.status}`);
+            }
+            const data = await res.json();
+            const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+            if (text) {
+                console.log(`✅ Gemini model used: ${model}`);
+                return text;
+            }
+            throw new Error('Empty response');
+        } catch(e) {
+            console.warn(`❌ ${model}: ${e.message}`);
+            lastErr = e;
+        }
+    }
+    throw lastErr;
+}
+    
 function switchTab(i){document.querySelectorAll('.def-tab').forEach((t,j)=>t.classList.toggle('active',i===j));document.querySelectorAll('.def-panel').forEach((p,j)=>p.classList.toggle('active',i===j));}
 function pickDefDirect(el,def,ex,pos){document.querySelectorAll('.definition-item').forEach(d=>{d.classList.remove('selected');d.querySelector('.select-indicator').style.display='none';});el.classList.add('selected');el.querySelector('.select-indicator').style.display='inline';document.getElementById('final-meaning').value=def;document.getElementById('lk-pos').textContent=pos;if(ex)document.getElementById('final-sentence').value=ex;toast('✅ Definition selected!');}
 function addColloc(c){const el=document.getElementById('final-collocations');el.value=el.value.trim()?el.value.trim()+', '+c:c;toast('🔗 Collocation added!');}
